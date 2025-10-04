@@ -55,9 +55,13 @@
                         <span>Withdrawal Fee:</span>
                         <span class="text-red-300">5%</span>
                     </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Conversion Rate:</span>
+                        <span id="conversionRate">10,000 coins = ₹100</span>
+                    </div>
                     <div class="flex justify-between text-sm">
                         <span>Minimum Withdrawal:</span>
-                        <span>10,000 coins</span>
+                        <span id="minWithdrawal">10,000 coins</span>
                     </div>
                 </div>
 
@@ -69,25 +73,31 @@
                             onclick="selectMethod('UPI')"
                             class="withdrawal-method bg-white/20 border-2 border-transparent rounded-2xl p-4 text-center hover:bg-white/30 transition-all duration-200"
                             data-method="UPI"
+                            data-min="10000"
                         >
                             <i class="fas fa-mobile-alt text-2xl text-blue-400 mb-2"></i>
                             <div class="font-semibold">UPI</div>
+                            <div class="text-xs text-gray-300 mt-1">Min: 10K coins</div>
                         </button>
                         <button 
                             onclick="selectMethod('Paytm')"
                             class="withdrawal-method bg-white/20 border-2 border-transparent rounded-2xl p-4 text-center hover:bg-white/30 transition-all duration-200"
                             data-method="Paytm"
+                            data-min="10000"
                         >
                             <i class="fas fa-wallet text-2xl text-green-400 mb-2"></i>
                             <div class="font-semibold">Paytm</div>
+                            <div class="text-xs text-gray-300 mt-1">Min: 10K coins</div>
                         </button>
                         <button 
                             onclick="selectMethod('PayPal')"
                             class="withdrawal-method bg-white/20 border-2 border-transparent rounded-2xl p-4 text-center hover:bg-white/30 transition-all duration-200"
                             data-method="PayPal"
+                            data-min="50000"
                         >
                             <i class="fab fa-paypal text-2xl text-blue-500 mb-2"></i>
                             <div class="font-semibold">PayPal</div>
+                            <div class="text-xs text-gray-300 mt-1">Min: 50K coins</div>
                         </button>
                     </div>
                 </div>
@@ -116,7 +126,7 @@
                         min="10000"
                         oninput="calculateNetAmount()"
                     >
-                    <div class="text-xs text-gray-300 mt-1">Minimum: 10,000 coins</div>
+                    <div class="text-xs text-gray-300 mt-1" id="minAmountText">Minimum: 10,000 coins</div>
                 </div>
 
                 <!-- Calculation -->
@@ -144,6 +154,33 @@
                 >
                     Process Withdrawal
                 </button>
+            </div>
+
+            <!-- Conversion Rates Info -->
+            <div class="premium-card rounded-3xl p-6 text-white mb-6">
+                <h3 class="text-lg font-bold mb-4">Conversion Rates</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-rupee-sign text-green-400"></i>
+                            <span>UPI / Paytm</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-yellow-300 font-bold">10,000 coins = ₹100</div>
+                            <div class="text-xs text-gray-300">Min: 10,000 coins</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                        <div class="flex items-center space-x-3">
+                            <i class="fab fa-paypal text-blue-400"></i>
+                            <span>PayPal</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-yellow-300 font-bold">50,000 coins = $5</div>
+                            <div class="text-xs text-gray-300">Min: 50,000 coins</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Recent Withdrawals -->
@@ -196,6 +233,7 @@
         let currentUser = null;
         let userData = null;
         let selectedMethod = null;
+        let minAmount = 10000;
 
         async function loadWithdrawPage() {
             try {
@@ -283,13 +321,29 @@
         function selectMethod(method) {
             selectedMethod = method;
             
+            // Get minimum amount from data attribute
+            const methodButton = document.querySelector(`[data-method="${method}"]`);
+            minAmount = parseInt(methodButton.getAttribute('data-min'));
+            
             // Reset all buttons
             document.querySelectorAll('.withdrawal-method').forEach(btn => {
                 btn.classList.remove('border-yellow-400', 'bg-white/30');
             });
             
             // Highlight selected button
-            document.querySelector(`[data-method="${method}"]`).classList.add('border-yellow-400', 'bg-white/30');
+            methodButton.classList.add('border-yellow-400', 'bg-white/30');
+            
+            // Update minimum amount in input field
+            document.getElementById('withdrawAmount').min = minAmount;
+            document.getElementById('minAmountText').textContent = `Minimum: ${minAmount.toLocaleString()} coins`;
+            document.getElementById('minWithdrawal').textContent = `${minAmount.toLocaleString()} coins`;
+            
+            // Update conversion rate display
+            if (method === 'PayPal') {
+                document.getElementById('conversionRate').textContent = '50,000 coins = $5';
+            } else {
+                document.getElementById('conversionRate').textContent = '10,000 coins = ₹100';
+            }
             
             // Show account details
             const accountDetails = document.getElementById('accountDetails');
@@ -313,6 +367,9 @@
                     break;
             }
             
+            // Clear amount and recalculate
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('calculation').classList.add('hidden');
             validateForm();
         }
 
@@ -320,17 +377,26 @@
             const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
             const calculation = document.getElementById('calculation');
             
-            if (amount >= 10000) {
+            if (amount >= minAmount) {
                 const fee = Math.floor(amount * 0.05);
                 const netAmount = amount - fee;
                 
-                document.getElementById('requestedAmount').textContent = amount + ' coins';
-                document.getElementById('feeAmount').textContent = fee + ' coins';
-                document.getElementById('netAmount').textContent = netAmount + ' coins';
+                document.getElementById('requestedAmount').textContent = amount.toLocaleString() + ' coins';
+                document.getElementById('feeAmount').textContent = fee.toLocaleString() + ' coins';
+                document.getElementById('netAmount').textContent = netAmount.toLocaleString() + ' coins';
                 
-                // Calculate cash value
-                const cashValue = (netAmount / 100).toFixed(2); // 10,000 coins = ₹100
-                document.getElementById('cashValue').textContent = `≈ ₹${cashValue}`;
+                // Calculate cash value based on method
+                let cashValue = '';
+                if (selectedMethod === 'PayPal') {
+                    // 50,000 coins = $5, so 1 coin = 0.0001 USD
+                    const usdValue = (netAmount * 0.0001).toFixed(2);
+                    cashValue = `≈ $${usdValue}`;
+                } else {
+                    // 10,000 coins = ₹100, so 1 coin = 0.01 INR
+                    const inrValue = (netAmount * 0.01).toFixed(2);
+                    cashValue = `≈ ₹${inrValue}`;
+                }
+                document.getElementById('cashValue').textContent = cashValue;
                 
                 calculation.classList.remove('hidden');
             } else {
@@ -345,7 +411,7 @@
             const account = document.getElementById('accountInput').value;
             const button = document.getElementById('withdrawButton');
             
-            if (selectedMethod && account && amount >= 10000 && amount <= (userData.total_coins || 0)) {
+            if (selectedMethod && account && amount >= minAmount && amount <= (userData.total_coins || 0)) {
                 button.disabled = false;
             } else {
                 button.disabled = true;
@@ -357,8 +423,8 @@
                 const amount = parseInt(document.getElementById('withdrawAmount').value);
                 const account = document.getElementById('accountInput').value;
                 
-                if (amount < 10000) {
-                    showNotification('Minimum withdrawal is 10,000 coins', 'error');
+                if (amount < minAmount) {
+                    showNotification(`Minimum withdrawal is ${minAmount.toLocaleString()} coins for ${selectedMethod}`, 'error');
                     return;
                 }
                 
@@ -408,6 +474,13 @@
                 selectedMethod = null;
                 document.getElementById('accountDetails').classList.add('hidden');
                 document.getElementById('withdrawButton').disabled = true;
+                
+                // Reset to default values
+                minAmount = 10000;
+                document.getElementById('withdrawAmount').min = minAmount;
+                document.getElementById('minAmountText').textContent = `Minimum: ${minAmount.toLocaleString()} coins`;
+                document.getElementById('minWithdrawal').textContent = `${minAmount.toLocaleString()} coins`;
+                document.getElementById('conversionRate').textContent = '10,000 coins = ₹100';
                 
                 // Reload data
                 await loadUserData();
