@@ -57,13 +57,13 @@
                 </div>
 
                 <!-- Referral Code -->
-                <div class="mb-6">
+                <div class="mb-4">
                     <label class="block text-gray-300 text-sm font-semibold mb-2">Your Referral Code</label>
                     <div class="flex space-x-2">
                         <input 
                             type="text" 
                             id="referralCode"
-                            class="flex-1 bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white font-mono"
+                            class="flex-1 bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white font-mono text-center"
                             readonly
                         >
                         <button 
@@ -82,8 +82,14 @@
     <section class="p-4">
         <div class="container mx-auto">
             <div class="premium-card rounded-3xl p-6 text-white mb-6">
-                <h3 class="text-lg font-bold mb-4">Update Profile</h3>
-                <form id="profileForm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">Update Profile</h3>
+                    <button onclick="toggleSection('profileForm')" class="text-gray-300 hover:text-white">
+                        <i class="fas fa-chevron-down" id="profileFormIcon"></i>
+                    </button>
+                </div>
+                
+                <form id="profileForm" class="accordion-content">
                     <div class="mb-4">
                         <label class="block text-gray-300 text-sm font-semibold mb-2">Full Name</label>
                         <input 
@@ -126,8 +132,14 @@
     <section class="p-4">
         <div class="container mx-auto">
             <div class="premium-card rounded-3xl p-6 text-white mb-6">
-                <h3 class="text-lg font-bold mb-4">Change Password</h3>
-                <form id="passwordForm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">Change Password</h3>
+                    <button onclick="toggleSection('passwordForm')" class="text-gray-300 hover:text-white">
+                        <i class="fas fa-chevron-down" id="passwordFormIcon"></i>
+                    </button>
+                </div>
+                
+                <form id="passwordForm" class="accordion-content">
                     <div class="mb-4">
                         <label class="block text-gray-300 text-sm font-semibold mb-2">Current Password</label>
                         <input 
@@ -286,7 +298,7 @@
                 if (error) throw error;
 
                 // Update UI
-                document.getElementById('profileName').textContent = user.name || 'User';
+                document.getElementById('profileName').textContent = user.name || user.email;
                 document.getElementById('profileEmail').textContent = user.email;
                 document.getElementById('referralCode').value = user.referral_code;
                 document.getElementById('name').value = user.name || '';
@@ -295,11 +307,11 @@
 
             } catch (error) {
                 console.error('Profile load error:', error);
-                window.location.href = 'login.html';
+                showNotification('Failed to load profile data', 'error');
             }
         }
 
-        // Profile form submission
+        // Profile form submission - FIXED
         document.getElementById('profileForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -313,20 +325,24 @@
                     .update({
                         name: name,
                         upi_id: upiId,
-                        paypal_email: paypalEmail
+                        paypal_email: paypalEmail,
+                        updated_at: new Date().toISOString()
                     })
                     .eq('id', currentUser.id);
 
                 if (error) throw error;
 
+                // Update displayed name immediately
+                document.getElementById('profileName').textContent = name || currentUser.email;
                 showNotification('Profile updated successfully!', 'success');
+                
             } catch (error) {
                 console.error('Profile update error:', error);
-                showNotification('Failed to update profile', 'error');
+                showNotification('Failed to update profile: ' + error.message, 'error');
             }
         });
 
-        // Password form submission
+        // Password form submission - FIXED
         document.getElementById('passwordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -339,7 +355,23 @@
                 return;
             }
 
+            if (newPassword.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
             try {
+                // First verify current password by trying to sign in
+                const { error: signInError } = await supabase.auth.signInWithPassword({
+                    email: currentUser.email,
+                    password: currentPassword
+                });
+
+                if (signInError) {
+                    showNotification('Current password is incorrect', 'error');
+                    return;
+                }
+
                 // Update password
                 const { error } = await supabase.auth.updateUser({
                     password: newPassword
@@ -350,10 +382,13 @@
                 showNotification('Password updated successfully!', 'success');
                 
                 // Clear form
-                document.getElementById('passwordForm').reset();
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
             } catch (error) {
                 console.error('Password update error:', error);
-                showNotification('Failed to update password', 'error');
+                showNotification('Failed to update password: ' + error.message, 'error');
             }
         });
 
@@ -366,6 +401,20 @@
             showNotification('Referral code copied!', 'success');
         }
 
+        // Toggle section visibility
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const icon = document.getElementById(sectionId + 'Icon');
+            
+            if (section.style.maxHeight && section.style.maxHeight !== '0px') {
+                section.style.maxHeight = '0px';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                section.style.maxHeight = section.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
         // FAQ Accordion
         document.querySelectorAll('.accordion-header').forEach(header => {
             header.addEventListener('click', function() {
@@ -376,7 +425,7 @@
                     content.style.maxHeight = null;
                     icon.style.transform = 'rotate(0deg)';
                 } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.maxHeight = content.scrollHeight + 'px';
                     icon.style.transform = 'rotate(180deg)';
                 }
             });
@@ -407,8 +456,16 @@
             }
         }
 
-        // Initialize profile
-        document.addEventListener('DOMContentLoaded', loadProfile);
+        // Initialize forms as collapsed by default
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial state for accordions
+            document.querySelectorAll('.accordion-content').forEach(content => {
+                content.style.maxHeight = '0px';
+            });
+            
+            // Load profile data
+            loadProfile();
+        });
     </script>
 </body>
 </html>
