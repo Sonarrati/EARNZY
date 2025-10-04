@@ -176,6 +176,14 @@
         </div>
     </nav>
 
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-6 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+            <p class="text-gray-800 font-semibold">Loading wallet data...</p>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Supabase
@@ -185,6 +193,9 @@
 
         async function loadDashboard() {
             try {
+                // Show loading
+                document.getElementById('loadingOverlay').classList.remove('hidden');
+
                 // Check authentication
                 const { data: { session } } = await supabase.auth.getSession();
                 if (!session) {
@@ -192,17 +203,24 @@
                     return;
                 }
 
-                // Load user data
+                console.log('Session found:', session.user.id);
+
+                // Load user data with error handling
                 const { data: user, error } = await supabase
                     .from('users')
                     .select('*')
                     .eq('id', session.user.id)
                     .single();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error loading user data:', error);
+                    throw error;
+                }
 
-                // Update UI
-                document.getElementById('userName').textContent = user.name || user.email;
+                console.log('User data loaded:', user);
+
+                // Update UI with actual data
+                document.getElementById('userName').textContent = user.email || 'User';
                 document.getElementById('totalCoins').textContent = user.total_coins || 0;
                 document.getElementById('earnedCoins').textContent = user.earned_coins || 0;
                 document.getElementById('withdrawnCoins').textContent = (user.withdrawn_coins || 0) + ' coins';
@@ -213,7 +231,27 @@
 
             } catch (error) {
                 console.error('Dashboard load error:', error);
-                window.location.href = 'login.html';
+                
+                // Show error state but don't redirect
+                document.getElementById('userName').textContent = 'Error loading data';
+                document.getElementById('totalCoins').textContent = '0';
+                document.getElementById('earnedCoins').textContent = '0';
+                document.getElementById('withdrawnCoins').textContent = '0 coins';
+                document.getElementById('availableBalance').textContent = '0 coins';
+                
+                // Show error in activity section
+                document.getElementById('recentActivity').innerHTML = `
+                    <div class="text-center py-8 text-red-400">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+                        <p>Failed to load data</p>
+                        <button onclick="loadDashboard()" class="mt-4 bg-yellow-400 text-gray-800 px-4 py-2 rounded-2xl font-semibold">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            } finally {
+                // Hide loading
+                document.getElementById('loadingOverlay').classList.add('hidden');
             }
         }
 
@@ -245,9 +283,23 @@
                             <div class="text-green-400 font-bold">+${earning.coins}</div>
                         </div>
                     `).join('');
+                } else {
+                    activityContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-history text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-400">No recent activity</p>
+                            <p class="text-gray-300 text-sm mt-2">Complete tasks to see your earnings here</p>
+                        </div>
+                    `;
                 }
             } catch (error) {
                 console.error('Activity load error:', error);
+                document.getElementById('recentActivity').innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
+                        <p>Failed to load activity</p>
+                    </div>
+                `;
             }
         }
 
@@ -258,30 +310,39 @@
                 checkin: 'calendar-check',
                 treasure: 'gem',
                 referral: 'user-friends',
-                task: 'tasks'
+                task: 'tasks',
+                admin_adjustment: 'cog'
             };
             return icons[type] || 'coins';
         }
 
-        async function loadDashboard() {
-    try {
-        // Check authentication
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            window.location.href = 'login.html';
-            return;
+        async function signOut() {
+            try {
+                document.getElementById('loadingOverlay').classList.remove('hidden');
+                const { error } = await supabase.auth.signOut();
+                if (!error) {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Sign out error:', error);
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
         }
 
-        // ... rest of the code
-
-    } catch (error) {
-        console.error('Dashboard load error:', error);
-        // DON'T redirect on error, just show error
-    }
-}
+        // Refresh dashboard when coming back to the page
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                loadDashboard();
+            }
+        });
 
         // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(loadDashboard, 30000);
+        });
     </script>
 </body>
 </html>
