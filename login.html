@@ -99,12 +99,12 @@
             const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3b3Fwd3lqdWdmc2l3bHd2bWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NzkzNDAsImV4cCI6MjA3NTA1NTM0MH0.36cfavBebNeF4SLuar3jUTRORYnhaOhc6A5xuF4HvLw';
             const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-            // Check if already logged in
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                window.location.href = 'dashboard.html';
-                return;
-            }
+            // COMMENT OUT THE AUTO-REDIRECT - Let user manually login
+            // const { data: { session } } = await supabase.auth.getSession();
+            // if (session) {
+            //     window.location.href = 'dashboard.html';
+            //     return;
+            // }
 
             // Handle form submission
             document.getElementById('loginForm').addEventListener('submit', async function(e) {
