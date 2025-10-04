@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnzy - Earn Money Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .premium-card { 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/10 backdrop-blur-lg z-50 border-b border-white/20">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-coins text-gray-800"></i>
+                    </div>
+                    <span class="text-xl font-bold">Earnzy</span>
+                </div>
+                <a href="login.html" class="bg-white text-purple-600 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4">
+        <div class="container mx-auto text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Earn Money While
+                <span class="text-yellow-300">Having Fun</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
+                Watch ads, play games, complete tasks and get real money rewards. Join thousands of happy earners today!
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                <a href="signup.html" class="bg-yellow-400 text-gray-900 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    Start Earning Now
+                </a>
+                <a href="login.html" class="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white hover:text-purple-600 transition-all duration-300">
+                    Sign In
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="premium-card rounded-2xl p-6 text-center">
+                    <i class="fas fa-users text-3xl text-yellow-300 mb-3"></i>
+                    <div class="text-3xl font-bold">10K+</div>
+                    <div class="text-gray-300">Active Earners</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 text-center">
+                    <i class="fas fa-coins text-3xl text-yellow-300 mb-3"></i>
+                    <div class="text-3xl font-bold">₹500K+</div>
+                    <div class="text-gray-300">Paid Out</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 text-center">
+                    <i class="fas fa-star text-3xl text-yellow-300 mb-3"></i>
+                    <div class="text-3xl font-bold">4.8★</div>
+                    <div class="text-gray-300">Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 px-4 bg-white/5">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-plus text-2xl text-gray-800"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">1. Sign Up</h3>
+                    <p class="text-gray-300">Create your free account in seconds</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-play-circle text-2xl text-gray-800"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2. Complete Tasks</h3>
+                    <p class="text-gray-300">Watch ads, play games, check in daily</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-coins text-2xl text-gray-800"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">3. Earn Coins</h3>
+                    <p class="text-gray-300">Get coins for every completed task</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-wallet text-2xl text-gray-800"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">4. Withdraw</h3>
+                    <p class="text-gray-300">Convert coins to real money</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-20 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">Earning Methods</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="premium-card rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-tv text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Watch Ads</h3>
+                    <p class="text-gray-300 mb-4">10-20 coins per ad, up to 50 ads daily</p>
+                    <div class="text-yellow-400 font-semibold">Easy Money</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-scroll text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Scratch Cards</h3>
+                    <p class="text-gray-300 mb-4">5-50 coins per card, 3 cards daily</p>
+                    <div class="text-yellow-400 font-semibold">Instant Win</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-calendar-check text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Daily Check-in</h3>
+                    <p class="text-gray-300 mb-4">10-100 coins based on streak</p>
+                    <div class="text-yellow-400 font-semibold">Build Streak</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-gem text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Treasure Box</h3>
+                    <p class="text-gray-300 mb-4">20-200 coins, open 1 box daily</p>
+                    <div class="text-yellow-400 font-semibold">Big Rewards</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-user-friends text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Refer Friends</h3>
+                    <p class="text-gray-300 mb-4">250 coins for you and your friend</p>
+                    <div class="text-yellow-400 font-semibold">Team Up</div>
+                </div>
+                <div class="premium-card rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-wallet text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Instant Withdrawal</h3>
+                    <p class="text-gray-300 mb-4">UPI, Paytm, PayPal with 5% fee</p>
+                    <div class="text-yellow-400 font-semibold">Get Paid</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 px-4 text-center">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-4xl font-bold mb-6">Ready to Start Earning?</h2>
+            <p class="text-xl text-gray-300 mb-8">Join thousands of users who are already earning real money with Earnzy</p>
+            <a href="signup.html" class="bg-yellow-400 text-gray-900 px-12 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 inline-block">
+                Create Free Account
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-4 border-t border-white/20">
+        <div class="container mx-auto text-center text-gray-300">
+            <p>&copy; 2024 Earnzy. All rights reserved. Start your earning journey today!</p>
+        </div>
+    </footer>
+
+    <script>
+        // Redirect to login if already authenticated
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load Supabase SDK
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+            document.head.appendChild(script);
+            
+            script.onload = async function() {
+                // Check auth after Supabase loads
+                const { createClient } = window.supabase;
+                const supabase = createClient(
+                    'https://qwoqpwyjugfsiwlwvmlf.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3b3Fwd3lqdWdmc2l3bHd2bWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NzkzNDAsImV4cCI6MjA3NTA1NTM0MH0.36cfavBebNeF4SLuar3jUTRORYnhaOhc6A5xuF4HvLw'
+                );
+                
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    window.location.href = 'dashboard.html';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
