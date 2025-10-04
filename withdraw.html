@@ -65,19 +65,14 @@
                     </div>
                 </div>
 
-                <!-- New Withdrawal Info Sections -->
-                <div class="bg-green-500/20 border border-green-400 rounded-2xl p-4 mb-4">
-                    <div class="text-green-300 text-sm font-semibold" id="welcomeBonus">
-                        🎁 Welcome Bonus: 500 Coins
-                    </div>
-                </div>
-
+                <!-- First Withdrawal Info -->
                 <div class="bg-yellow-500/20 border border-yellow-400 rounded-2xl p-4 mb-4 hidden" id="firstWithdrawalInfo">
                     <div class="text-yellow-300 text-sm font-semibold">
                         ✨ First Withdrawal Minimum: ₹20 (2,000 coins) for India / $1.5 (15,000 coins) for International
                     </div>
                 </div>
 
+                <!-- Next Withdrawal Info -->
                 <div class="bg-blue-500/20 border border-blue-400 rounded-2xl p-4 mb-4 hidden" id="nextWithdrawalInfo">
                     <div class="text-blue-300 text-sm font-semibold">
                         📍 Next Withdrawals: ₹100 (10,000 coins) / $5 (50,000 coins) minimum
@@ -295,13 +290,8 @@
         }
 
         function updateWithdrawalInfoUI() {
-            const welcomeBonus = document.getElementById('welcomeBonus');
             const firstWithdrawalInfo = document.getElementById('firstWithdrawalInfo');
             const nextWithdrawalInfo = document.getElementById('nextWithdrawalInfo');
-
-            if (welcomeBonus) {
-                welcomeBonus.textContent = '🎁 Welcome Bonus: 500 Coins';
-            }
 
             if (firstWithdrawalInfo) {
                 if (isFirstWithdrawal) {
