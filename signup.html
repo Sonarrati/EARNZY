@@ -167,19 +167,18 @@
 
                     // Create user profile
                     const { error: profileError } = await supabase
-                        .from('users')
-                        .insert({
-                            id: authData.user.id,
-                            email: email,
-                            name: name,
-                            referral_code: userReferralCode,
-                            referred_by: referralCode || null,
-                            total_coins: 0,
-                            earned_coins: 0,
-                            withdrawn_coins: 0,
-                            daily_streak: 0,
-                            last_checkin: null
-                        });
+    .from('users')
+    .insert({
+        id: authData.user.id,
+        email: email,
+        referral_code: userReferralCode,
+        referred_by: referralCode || null,
+        total_coins: 0,
+        earned_coins: 0,
+        withdrawn_coins: 0,
+        daily_streak: 0,
+        last_checkin: null
+    });
 
                     if (profileError) throw profileError;
 
