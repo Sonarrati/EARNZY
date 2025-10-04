@@ -12,23 +12,6 @@
             font-family: 'Poppins', sans-serif;
         }
         
-        .countdown-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
         .pulse {
             animation: pulse 2s infinite;
         }
@@ -91,26 +74,15 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
         
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            width: 0%;
-            transition: width 1s linear;
+        .hidden-countdown {
+            display: none;
         }
     </style>
 </head>
 <body class="gradient-bg min-h-screen text-white">
-    <!-- Countdown Timer -->
-    <div class="countdown-circle">
-        <span id="countdown" class="text-xl font-bold">30</span>
+    <!-- Hidden Countdown Timer -->
+    <div class="hidden-countdown">
+        <span id="countdown">60</span>
     </div>
     
     <!-- Hero Section -->
@@ -129,7 +101,7 @@
             </p>
             
             <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-8 max-w-md mx-auto fade-in">
-                <div class="text-3xl font-bold text-yellow-300 mb-2">₹345.37</div>
+                <div class="text-3xl font-bold text-yellow-300 mb-2">₹35,000</div>
                 <div class="text-gray-300">Average Monthly Earnings</div>
             </div>
             
@@ -154,14 +126,6 @@
                     <i class="fas fa-users text-3xl text-yellow-300 mb-3"></i>
                     <div class="text-2xl font-bold">10K+</div>
                     <div class="text-gray-300">Happy Earners</div>
-                </div>
-            </div>
-            
-            <!-- Progress Bar for Redirect -->
-            <div class="mt-12 max-w-md mx-auto">
-                <div class="text-gray-200 mb-2">Redirecting to signup in <span id="countdown-text">30</span> seconds</div>
-                <div class="progress-bar">
-                    <div id="progress-fill" class="progress-fill"></div>
                 </div>
             </div>
         </div>
@@ -228,7 +192,7 @@
                             <div class="text-yellow-300">★★★★★</div>
                         </div>
                     </div>
-                    <p class="text-gray-200">"I earned ₹5000 in my first month just by playing games in my free time. Withdrawals are instant!"</p>
+                    <p class="text-gray-200">"I earned ₹35,000 in my first month just by playing games in my free time. Withdrawals are instant!"</p>
                 </div>
                 
                 <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6">
@@ -254,7 +218,7 @@
                             <div class="text-yellow-300">★★★★★</div>
                         </div>
                     </div>
-                    <p class="text-gray-200">"I was skeptical at first, but after withdrawing ₹2000, I'm convinced. This app really pays!"</p>
+                    <p class="text-gray-200">"I was skeptical at first, but after withdrawing ₹35,000, I'm convinced. This app really pays!"</p>
                 </div>
             </div>
         </div>
@@ -285,19 +249,12 @@
 
     <script>
         // Countdown and redirect functionality
-        let countdown = 30;
+        let countdown = 60;
         const countdownElement = document.getElementById('countdown');
-        const countdownText = document.getElementById('countdown-text');
-        const progressFill = document.getElementById('progress-fill');
         
         const countdownInterval = setInterval(() => {
             countdown--;
             countdownElement.textContent = countdown;
-            countdownText.textContent = countdown;
-            
-            // Update progress bar
-            const progressPercentage = ((30 - countdown) / 30) * 100;
-            progressFill.style.width = `${progressPercentage}%`;
             
             if (countdown <= 0) {
                 clearInterval(countdownInterval);
