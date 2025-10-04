@@ -263,16 +263,22 @@
             return icons[type] || 'coins';
         }
 
-        async function signOut() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (!error) {
-                    window.location.href = 'login.html';
-                }
-            } catch (error) {
-                console.error('Sign out error:', error);
-            }
+        async function loadDashboard() {
+    try {
+        // Check authentication
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = 'login.html';
+            return;
         }
+
+        // ... rest of the code
+
+    } catch (error) {
+        console.error('Dashboard load error:', error);
+        // DON'T redirect on error, just show error
+    }
+}
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', loadDashboard);
