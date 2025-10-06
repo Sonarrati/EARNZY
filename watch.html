@@ -16,15 +16,6 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        #adPopup {
-            transition: all 0.3s ease;
-        }
-        #adContainerPopup {
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -65,11 +56,11 @@
                     </div>
                     <div class="flex justify-between text-sm mb-2">
                         <span>Daily limit:</span>
-                        <span>20 ads</span>
+                        <span>50 ads</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span>Watched today:</span>
-                        <span id="watchedToday">0/20</span>
+                        <span id="watchedToday">0/50</span>
                     </div>
                 </div>
 
@@ -78,11 +69,11 @@
                     <div class="bg-black rounded-2xl p-4 aspect-video flex items-center justify-center mb-4">
                         <div class="text-center">
                             <i class="fas fa-play-circle text-4xl text-white mb-2"></i>
-                            <p class="text-white">Click button to watch ad</p>
+                            <p class="text-white">Ad will play here</p>
                         </div>
                     </div>
                     <button 
-                        onclick="showAd()"
+                        onclick="watchAd()"
                         id="watchButton"
                         class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
@@ -93,7 +84,7 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold">Processing your reward...</p>
+                    <p class="text-lg font-semibold">Watching ad...</p>
                     <p class="text-gray-300 text-sm">Please wait 5 seconds</p>
                 </div>
 
@@ -105,7 +96,7 @@
                     <h3 class="text-xl font-bold mb-2">Congratulations!</h3>
                     <p class="text-gray-300 mb-4">You earned <span id="earnedCoins" class="text-yellow-300 font-bold">0</span> coins</p>
                     <button 
-                        onclick="showAd()"
+                        onclick="resetAd()"
                         class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105"
                     >
                         Watch Another Ad
@@ -125,39 +116,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Ad Popup -->
-    <div id="adPopup" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h3 class="text-lg font-bold">Watch Ad to Earn Coins</h3>
-                <button onclick="closeAd()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <div class="p-4">
-                <div id="adContainerPopup" class="bg-gray-100 rounded-lg mb-4 min-h-[400px] flex items-center justify-center">
-                    <div class="text-center text-gray-500">
-                        <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
-                        <p>Loading advertisement...</p>
-                    </div>
-                </div>
-                <div class="text-center text-gray-600 mb-4">
-                    <p>Please watch the ad completely to earn coins</p>
-                    <p class="text-sm">Ad will close automatically after <span id="countdownText">15</span> seconds</p>
-                </div>
-                <div class="flex justify-between items-center">
-                    <button onclick="closeAd()" class="px-4 py-2 text-gray-600 hover:text-gray-800">
-                        Skip Ad
-                    </button>
-                    <div id="countdown" class="text-lg font-bold text-yellow-600">15</div>
-                    <button onclick="completeAd()" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
-                        I Watched Complete Ad
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-t border-white/20">
@@ -186,9 +144,6 @@
     <!-- Notification -->
     <div id="notification" class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-transform duration-300 hidden"></div>
 
-    <!-- Revenue CPM Gate Script -->
-    <script type='text/javascript' src='//pl27796166.revenuecpmgate.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js'></script>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Supabase
@@ -198,9 +153,6 @@
 
         let currentUser = null;
         let todayEarnings = [];
-        let countdownTimer;
-        let countdownSeconds = 15;
-        let adScriptLoaded = false;
 
         async function loadWatchPage() {
             try {
@@ -240,10 +192,10 @@
                 const watchedToday = todayEarnings.length;
 
                 document.getElementById('todayEarnings').textContent = totalToday;
-                document.getElementById('watchedToday').textContent = `${watchedToday}/20`;
+                document.getElementById('watchedToday').textContent = `${watchedToday}/50`;
 
-                // Disable button if limit reached (20 ads)
-                if (watchedToday >= 20) {
+                // Disable button if limit reached
+                if (watchedToday >= 50) {
                     document.getElementById('watchButton').disabled = true;
                     document.getElementById('watchButton').textContent = 'Daily Limit Reached';
                 }
@@ -288,118 +240,21 @@
             }
         }
 
-        function showAd() {
+        async function watchAd() {
             try {
-                // Check daily limit (20 ads)
-                if (todayEarnings.length >= 20) {
-                    showNotification('Daily limit reached! Come back tomorrow.', 'error');
-                    return;
-                }
-
-                // Show ad popup
-                const adPopup = document.getElementById('adPopup');
-                adPopup.classList.remove('hidden');
-
-                // Load ad content
-                loadAdContent();
-
-                // Start countdown (15 seconds)
-                startCountdown();
-
-            } catch (error) {
-                console.error('Error showing ad:', error);
-                showNotification('Failed to load ad', 'error');
-            }
-        }
-
-        function loadAdContent() {
-            const adContainer = document.getElementById('adContainerPopup');
-            
-            // Clear previous content
-            adContainer.innerHTML = `
-                <div class="text-center text-gray-500">
-                    <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
-                    <p>Loading advertisement...</p>
-                </div>
-            `;
-
-            // Since the script is already loaded in head, we need to trigger the ad
-            // The script might automatically place ads, or we might need to call a function
-            // Let's assume the script auto-places ads when loaded
-            
-            // Alternative: Create a new script element to force ad load
-            setTimeout(() => {
-                try {
-                    // Try to inject ad content dynamically
-                    // This depends on how the ad script works
-                    adContainer.innerHTML = `
-                        <div class="w-full h-full">
-                            <p class="text-center text-gray-500 mb-4">Advertisement will appear here</p>
-                            <div id="ad-content-placeholder"></div>
-                        </div>
-                    `;
-                    
-                    // If the ad network requires specific placement, we can try to trigger it
-                    // This is a generic approach - you might need to adjust based on the ad network's documentation
-                    if (typeof window.adNetwork !== 'undefined' && window.adNetwork.showAd) {
-                        window.adNetwork.showAd('ad-content-placeholder');
-                    }
-                    
-                } catch (error) {
-                    console.error('Error loading ad content:', error);
-                    adContainer.innerHTML = `
-                        <div class="text-center text-red-500">
-                            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
-                            <p>Failed to load ad</p>
-                            <button onclick="loadAdContent()" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Retry</button>
-                        </div>
-                    `;
-                }
-            }, 1000);
-        }
-
-        function startCountdown() {
-            countdownSeconds = 15;
-            const countdownElement = document.getElementById('countdown');
-            countdownElement.textContent = countdownSeconds;
-
-            clearInterval(countdownTimer);
-            countdownTimer = setInterval(() => {
-                countdownSeconds--;
-                countdownElement.textContent = countdownSeconds;
-
-                if (countdownSeconds <= 0) {
-                    clearInterval(countdownTimer);
-                    completeAd();
-                }
-            }, 1000);
-        }
-
-        function closeAd() {
-            // Hide ad popup
-            document.getElementById('adPopup').classList.add('hidden');
-            clearInterval(countdownTimer);
-            
-            // Clear ad content
-            document.getElementById('adContainerPopup').innerHTML = `
-                <div class="text-center text-gray-500">
-                    <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
-                    <p>Loading advertisement...</p>
-                </div>
-            `;
-        }
-
-        async function completeAd() {
-            try {
-                closeAd();
-
                 // Show loading state
                 document.getElementById('adContainer').classList.add('hidden');
-                document.getElementById('resultState').classList.add('hidden');
                 document.getElementById('loadingState').classList.remove('hidden');
 
-                // Check daily limit again (20 ads)
-                if (todayEarnings.length >= 20) {
+                // Simulate ad watching (5 seconds)
+                await new Promise(resolve => setTimeout(resolve, 5000));
+
+                // Process ad watching
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                // Check daily limit
+                if (todayEarnings.length >= 50) {
                     throw new Error('Daily limit reached');
                 }
 
@@ -410,7 +265,7 @@
                 const { data: userData, error: userError } = await supabase
                     .from('users')
                     .select('*')
-                    .eq('id', currentUser.id)
+                    .eq('id', user.id)
                     .single();
 
                 if (userError) throw userError;
@@ -421,7 +276,7 @@
                         total_coins: userData.total_coins + coins,
                         earned_coins: userData.earned_coins + coins
                     })
-                    .eq('id', currentUser.id);
+                    .eq('id', user.id);
 
                 if (updateError) throw updateError;
 
@@ -429,7 +284,7 @@
                 const { error: earningError } = await supabase
                     .from('earnings')
                     .insert({
-                        user_id: currentUser.id,
+                        user_id: user.id,
                         type: 'watch',
                         coins: coins
                     });
@@ -448,11 +303,16 @@
                 showNotification(`+${coins} coins earned!`, 'success');
 
             } catch (error) {
-                console.error('Complete ad error:', error);
+                console.error('Watch ad error:', error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('adContainer').classList.remove('hidden');
                 showNotification(error.message || 'Failed to process ad', 'error');
             }
+        }
+
+        function resetAd() {
+            document.getElementById('resultState').classList.add('hidden');
+            document.getElementById('adContainer').classList.remove('hidden');
         }
 
         function showNotification(message, type) {
