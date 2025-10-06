@@ -59,11 +59,11 @@
                     </div>
                     <div class="flex justify-between text-sm mb-2">
                         <span>Daily limit:</span>
-                        <span>50 ads</span>
+                        <span>20 ads</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span>Watched today:</span>
-                        <span id="watchedToday">0/50</span>
+                        <span id="watchedToday">0/20</span>
                     </div>
                 </div>
 
@@ -141,13 +141,13 @@
                 </div>
                 <div class="text-center text-gray-600 mb-4">
                     <p>Please watch the ad completely to earn coins</p>
-                    <p class="text-sm">Ad will close automatically after 30 seconds</p>
+                    <p class="text-sm">Ad will close automatically after <span id="countdownText">15</span> seconds</p>
                 </div>
                 <div class="flex justify-between items-center">
                     <button onclick="closeAd()" class="px-4 py-2 text-gray-600 hover:text-gray-800">
                         Skip Ad
                     </button>
-                    <div id="countdown" class="text-lg font-bold text-yellow-600">30</div>
+                    <div id="countdown" class="text-lg font-bold text-yellow-600">15</div>
                     <button onclick="completeAd()" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
                         I Watched Complete Ad
                     </button>
@@ -193,7 +193,7 @@
         let currentUser = null;
         let todayEarnings = [];
         let countdownTimer;
-        let countdownSeconds = 30;
+        let countdownSeconds = 15; // Changed to 15 seconds
 
         async function loadWatchPage() {
             try {
@@ -233,10 +233,10 @@
                 const watchedToday = todayEarnings.length;
 
                 document.getElementById('todayEarnings').textContent = totalToday;
-                document.getElementById('watchedToday').textContent = `${watchedToday}/50`;
+                document.getElementById('watchedToday').textContent = `${watchedToday}/20`;
 
-                // Disable button if limit reached
-                if (watchedToday >= 50) {
+                // Disable button if limit reached (20 ads)
+                if (watchedToday >= 20) {
                     document.getElementById('watchButton').disabled = true;
                     document.getElementById('watchButton').textContent = 'Daily Limit Reached';
                 }
@@ -283,8 +283,8 @@
 
         function showAd() {
             try {
-                // Check daily limit
-                if (todayEarnings.length >= 50) {
+                // Check daily limit (20 ads)
+                if (todayEarnings.length >= 20) {
                     showNotification('Daily limit reached! Come back tomorrow.', 'error');
                     return;
                 }
@@ -293,13 +293,13 @@
                 const adPopup = document.getElementById('adPopup');
                 const adFrame = document.getElementById('adFrame');
                 
-                // Set the ad URL
-                adFrame.src = 'https://www.revenuecpmgate.com/jrcgp8tspv?key=cfdc048f1be37ad89069182de20d8c63';
+                // Set the NEW VAST ad URL
+                adFrame.src = 'https://vast.yomeno.xyz/vast?spot_id=1466729';
                 
                 // Show popup
                 adPopup.classList.remove('hidden');
                 
-                // Start countdown
+                // Start countdown (15 seconds)
                 startCountdown();
 
             } catch (error) {
@@ -309,7 +309,7 @@
         }
 
         function startCountdown() {
-            countdownSeconds = 30;
+            countdownSeconds = 15; // 15 seconds countdown
             const countdownElement = document.getElementById('countdown');
             countdownElement.textContent = countdownSeconds;
 
@@ -341,8 +341,8 @@
                 document.getElementById('resultState').classList.add('hidden');
                 document.getElementById('loadingState').classList.remove('hidden');
 
-                // Check daily limit again
-                if (todayEarnings.length >= 50) {
+                // Check daily limit again (20 ads)
+                if (todayEarnings.length >= 20) {
                     throw new Error('Daily limit reached');
                 }
 
