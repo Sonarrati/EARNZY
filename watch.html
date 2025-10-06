@@ -16,6 +16,9 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        #adPopup {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -69,11 +72,11 @@
                     <div class="bg-black rounded-2xl p-4 aspect-video flex items-center justify-center mb-4">
                         <div class="text-center">
                             <i class="fas fa-play-circle text-4xl text-white mb-2"></i>
-                            <p class="text-white">Ad will play here</p>
+                            <p class="text-white">Click button to watch ad</p>
                         </div>
                     </div>
                     <button 
-                        onclick="watchAd()"
+                        onclick="showAd()"
                         id="watchButton"
                         class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
@@ -84,7 +87,7 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold">Watching ad...</p>
+                    <p class="text-lg font-semibold">Processing your reward...</p>
                     <p class="text-gray-300 text-sm">Please wait 5 seconds</p>
                 </div>
 
@@ -96,7 +99,7 @@
                     <h3 class="text-xl font-bold mb-2">Congratulations!</h3>
                     <p class="text-gray-300 mb-4">You earned <span id="earnedCoins" class="text-yellow-300 font-bold">0</span> coins</p>
                     <button 
-                        onclick="resetAd()"
+                        onclick="showAd()"
                         class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105"
                     >
                         Watch Another Ad
@@ -116,6 +119,42 @@
             </div>
         </div>
     </section>
+
+    <!-- Ad Popup -->
+    <div id="adPopup" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-lg font-bold">Watch Ad to Earn Coins</h3>
+                <button onclick="closeAd()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                    <iframe 
+                        id="adFrame"
+                        src=""
+                        class="w-full h-full rounded-lg"
+                        frameborder="0"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <div class="text-center text-gray-600 mb-4">
+                    <p>Please watch the ad completely to earn coins</p>
+                    <p class="text-sm">Ad will close automatically after 30 seconds</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <button onclick="closeAd()" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                        Skip Ad
+                    </button>
+                    <div id="countdown" class="text-lg font-bold text-yellow-600">30</div>
+                    <button onclick="completeAd()" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+                        I Watched Complete Ad
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-t border-white/20">
@@ -153,6 +192,8 @@
 
         let currentUser = null;
         let todayEarnings = [];
+        let countdownTimer;
+        let countdownSeconds = 30;
 
         async function loadWatchPage() {
             try {
@@ -240,20 +281,67 @@
             }
         }
 
-        async function watchAd() {
+        function showAd() {
             try {
+                // Check daily limit
+                if (todayEarnings.length >= 50) {
+                    showNotification('Daily limit reached! Come back tomorrow.', 'error');
+                    return;
+                }
+
+                // Show ad popup
+                const adPopup = document.getElementById('adPopup');
+                const adFrame = document.getElementById('adFrame');
+                
+                // Set the ad URL
+                adFrame.src = 'https://www.revenuecpmgate.com/jrcgp8tspv?key=cfdc048f1be37ad89069182de20d8c63';
+                
+                // Show popup
+                adPopup.classList.remove('hidden');
+                
+                // Start countdown
+                startCountdown();
+
+            } catch (error) {
+                console.error('Error showing ad:', error);
+                showNotification('Failed to load ad', 'error');
+            }
+        }
+
+        function startCountdown() {
+            countdownSeconds = 30;
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = countdownSeconds;
+
+            clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                countdownSeconds--;
+                countdownElement.textContent = countdownSeconds;
+
+                if (countdownSeconds <= 0) {
+                    clearInterval(countdownTimer);
+                    completeAd();
+                }
+            }, 1000);
+        }
+
+        function closeAd() {
+            // Hide ad popup
+            document.getElementById('adPopup').classList.add('hidden');
+            document.getElementById('adFrame').src = '';
+            clearInterval(countdownTimer);
+        }
+
+        async function completeAd() {
+            try {
+                closeAd();
+
                 // Show loading state
                 document.getElementById('adContainer').classList.add('hidden');
+                document.getElementById('resultState').classList.add('hidden');
                 document.getElementById('loadingState').classList.remove('hidden');
 
-                // Simulate ad watching (5 seconds)
-                await new Promise(resolve => setTimeout(resolve, 5000));
-
-                // Process ad watching
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) throw new Error('Not authenticated');
-
-                // Check daily limit
+                // Check daily limit again
                 if (todayEarnings.length >= 50) {
                     throw new Error('Daily limit reached');
                 }
@@ -265,7 +353,7 @@
                 const { data: userData, error: userError } = await supabase
                     .from('users')
                     .select('*')
-                    .eq('id', user.id)
+                    .eq('id', currentUser.id)
                     .single();
 
                 if (userError) throw userError;
@@ -276,7 +364,7 @@
                         total_coins: userData.total_coins + coins,
                         earned_coins: userData.earned_coins + coins
                     })
-                    .eq('id', user.id);
+                    .eq('id', currentUser.id);
 
                 if (updateError) throw updateError;
 
@@ -284,7 +372,7 @@
                 const { error: earningError } = await supabase
                     .from('earnings')
                     .insert({
-                        user_id: user.id,
+                        user_id: currentUser.id,
                         type: 'watch',
                         coins: coins
                     });
@@ -303,16 +391,11 @@
                 showNotification(`+${coins} coins earned!`, 'success');
 
             } catch (error) {
-                console.error('Watch ad error:', error);
+                console.error('Complete ad error:', error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('adContainer').classList.remove('hidden');
                 showNotification(error.message || 'Failed to process ad', 'error');
             }
-        }
-
-        function resetAd() {
-            document.getElementById('resultState').classList.add('hidden');
-            document.getElementById('adContainer').classList.remove('hidden');
         }
 
         function showNotification(message, type) {
