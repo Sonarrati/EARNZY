@@ -16,6 +16,19 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        #adDisplay {
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            border-radius: 16px;
+        }
+        .countdown-timer {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -56,24 +69,31 @@
                     </div>
                     <div class="flex justify-between text-sm mb-2">
                         <span>Daily limit:</span>
-                        <span>50 ads</span>
+                        <span>20 ads</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span>Watched today:</span>
-                        <span id="watchedToday">0/50</span>
+                        <span id="watchedToday">0/20</span>
                     </div>
                 </div>
 
                 <!-- Ad Simulation -->
                 <div id="adContainer" class="mb-6">
-                    <div class="bg-black rounded-2xl p-4 aspect-video flex items-center justify-center mb-4">
-                        <div class="text-center">
+                    <div id="adDisplay" class="rounded-2xl p-4 aspect-video flex items-center justify-center mb-4">
+                        <div class="text-center" id="initialAdState">
                             <i class="fas fa-play-circle text-4xl text-white mb-2"></i>
                             <p class="text-white">Ad will play here</p>
                         </div>
+                        <div id="activeAdState" class="hidden w-full h-full">
+                            <!-- Ad will be loaded here -->
+                        </div>
+                        <div id="countdownState" class="hidden text-center">
+                            <div class="countdown-timer" id="countdown">15</div>
+                            <p class="text-white mt-2">Please watch the ad to earn coins</p>
+                        </div>
                     </div>
                     <button 
-                        onclick="watchAd()"
+                        onclick="startAd()"
                         id="watchButton"
                         class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
@@ -84,8 +104,8 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold">Watching ad...</p>
-                    <p class="text-gray-300 text-sm">Please wait 5 seconds</p>
+                    <p class="text-lg font-semibold">Loading ad...</p>
+                    <p class="text-gray-300 text-sm">Please wait a moment</p>
                 </div>
 
                 <!-- Result State -->
@@ -153,6 +173,8 @@
 
         let currentUser = null;
         let todayEarnings = [];
+        let countdownInterval = null;
+        let currentAdElement = null;
 
         async function loadWatchPage() {
             try {
@@ -192,10 +214,10 @@
                 const watchedToday = todayEarnings.length;
 
                 document.getElementById('todayEarnings').textContent = totalToday;
-                document.getElementById('watchedToday').textContent = `${watchedToday}/50`;
+                document.getElementById('watchedToday').textContent = `${watchedToday}/20`;
 
                 // Disable button if limit reached
-                if (watchedToday >= 50) {
+                if (watchedToday >= 20) {
                     document.getElementById('watchButton').disabled = true;
                     document.getElementById('watchButton').textContent = 'Daily Limit Reached';
                 }
@@ -240,23 +262,99 @@
             }
         }
 
-        async function watchAd() {
+        function startAd() {
             try {
                 // Show loading state
-                document.getElementById('adContainer').classList.add('hidden');
+                document.getElementById('watchButton').disabled = true;
                 document.getElementById('loadingState').classList.remove('hidden');
-
-                // Simulate ad watching (5 seconds)
-                await new Promise(resolve => setTimeout(resolve, 5000));
-
-                // Process ad watching
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) throw new Error('Not authenticated');
+                document.getElementById('adContainer').classList.add('hidden');
 
                 // Check daily limit
-                if (todayEarnings.length >= 50) {
+                if (todayEarnings.length >= 20) {
                     throw new Error('Daily limit reached');
                 }
+
+                // Load ad after a short delay
+                setTimeout(() => {
+                    loadAd();
+                }, 1000);
+
+            } catch (error) {
+                console.error('Start ad error:', error);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('adContainer').classList.remove('hidden');
+                document.getElementById('watchButton').disabled = false;
+                showNotification(error.message || 'Failed to load ad', 'error');
+            }
+        }
+
+        function loadAd() {
+            try {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('adContainer').classList.remove('hidden');
+                
+                // Hide initial state and show ad container
+                document.getElementById('initialAdState').classList.add('hidden');
+                document.getElementById('activeAdState').classList.remove('hidden');
+                document.getElementById('countdownState').classList.remove('hidden');
+
+                // Load the ad code
+                const activeAdState = document.getElementById('activeAdState');
+                activeAdState.innerHTML = `
+                    <div id="7SAD1568E5F2A765E38" data-7pub="7SAD1568E5F2A765E38"></div>
+                `;
+
+                // Load ad script
+                const script1 = document.createElement('script');
+                script1.src = 'https://code.adclickppc.com/7s-social-ad.js';
+                script1.async = true;
+
+                const script2 = document.createElement('script');
+                script2.textContent = `
+                    (function() {
+                        initSocialAd(['7SAD1568E5F2A765E38', 'social'])
+                    }())
+                `;
+
+                activeAdState.appendChild(script1);
+                activeAdState.appendChild(script2);
+
+                // Start countdown
+                startCountdown();
+
+            } catch (error) {
+                console.error('Load ad error:', error);
+                resetAd();
+                showNotification('Failed to load advertisement', 'error');
+            }
+        }
+
+        function startCountdown() {
+            let seconds = 15;
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = seconds;
+
+            countdownInterval = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = seconds;
+
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    processAdCompletion();
+                }
+            }, 1000);
+        }
+
+        async function processAdCompletion() {
+            try {
+                // Hide ad and show loading
+                document.getElementById('activeAdState').classList.add('hidden');
+                document.getElementById('countdownState').classList.add('hidden');
+                document.getElementById('loadingState').classList.remove('hidden');
+
+                // Process ad reward
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
 
                 // Generate random coins between 10-20
                 const coins = Math.floor(Math.random() * 11) + 10;
@@ -303,16 +401,34 @@
                 showNotification(`+${coins} coins earned!`, 'success');
 
             } catch (error) {
-                console.error('Watch ad error:', error);
+                console.error('Process ad completion error:', error);
                 document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('adContainer').classList.remove('hidden');
+                resetAd();
                 showNotification(error.message || 'Failed to process ad', 'error');
             }
         }
 
         function resetAd() {
+            // Clear any existing intervals
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Reset all states
             document.getElementById('resultState').classList.add('hidden');
+            document.getElementById('activeAdState').classList.add('hidden');
+            document.getElementById('countdownState').classList.add('hidden');
+            document.getElementById('initialAdState').classList.remove('hidden');
             document.getElementById('adContainer').classList.remove('hidden');
+            
+            // Clear ad content
+            document.getElementById('activeAdState').innerHTML = '';
+            
+            // Re-enable watch button if limit not reached
+            if (todayEarnings.length < 20) {
+                document.getElementById('watchButton').disabled = false;
+            }
         }
 
         function showNotification(message, type) {
