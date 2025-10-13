@@ -17,17 +17,35 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         #adDisplay {
-            min-height: 250px;
+            min-height: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000;
-            border-radius: 16px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        #adDisplay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         .countdown-timer {
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: bold;
             color: #fbbf24;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
         }
         .ad-container {
             width: 100%;
@@ -35,17 +53,52 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #0f172a;
+            border-radius: 16px;
+            position: relative;
+        }
+        .ad-placeholder {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+            border: 2px dashed #6b7280;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .ad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
     <!-- Header -->
-    <header class="bg-white/10 backdrop-blur-lg border-b border-white/20">
+    <header class="glass-effect border-b border-white/20">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <a href="dashboard.html" class="text-white">
-                        <i class="fas fa-arrow-left"></i>
+                    <a href="dashboard.html" class="text-white hover:text-yellow-300 transition-colors">
+                        <i class="fas fa-arrow-left text-lg"></i>
                     </a>
                     <div>
                         <h1 class="text-xl font-bold text-white">Watch Ads</h1>
@@ -64,68 +117,88 @@
     <section class="p-4">
         <div class="container mx-auto">
             <div class="premium-card rounded-3xl p-6 text-white mb-6 text-center">
-                <div class="w-20 h-20 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-tv text-3xl text-white"></i>
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-play-circle text-3xl text-white"></i>
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Watch & Earn</h2>
                 <p class="text-gray-300 mb-4">Watch short ads and earn coins instantly</p>
-                <div class="bg-white/20 rounded-2xl p-4 mb-6">
+                <div class="glass-effect rounded-2xl p-4 mb-6">
                     <div class="flex justify-between text-sm mb-2">
-                        <span>Coins per ad:</span>
-                        <span class="text-yellow-300">10-20 coins</span>
+                        <span class="text-gray-300">Coins per ad:</span>
+                        <span class="text-yellow-300 font-semibold">10-20 coins</span>
                     </div>
                     <div class="flex justify-between text-sm mb-2">
-                        <span>Daily limit:</span>
-                        <span>20 ads</span>
+                        <span class="text-gray-300">Daily limit:</span>
+                        <span class="text-white">20 ads</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span>Watched today:</span>
-                        <span id="watchedToday">0/20</span>
+                        <span class="text-gray-300">Watched today:</span>
+                        <span id="watchedToday" class="text-green-400 font-semibold">0/20</span>
                     </div>
                 </div>
 
                 <!-- Ad Simulation -->
                 <div id="adContainer" class="mb-6">
-                    <div id="adDisplay" class="rounded-2xl p-4 aspect-video flex items-center justify-center mb-4">
-                        <div class="text-center" id="initialAdState">
-                            <i class="fas fa-play-circle text-4xl text-white mb-2"></i>
-                            <p class="text-white">Ad will play here</p>
+                    <div id="adDisplay" class="rounded-2xl mb-4 overflow-hidden">
+                        <!-- Initial State -->
+                        <div id="initialAdState" class="text-center p-8 w-full">
+                            <div class="ad-placeholder mx-auto">
+                                <i class="fas fa-play-circle text-4xl text-yellow-400 mb-4"></i>
+                                <h3 class="text-white font-semibold text-lg mb-2">Ready to Watch</h3>
+                                <p class="text-gray-400">Click below to start earning coins</p>
+                            </div>
                         </div>
+                        
+                        <!-- Active Ad State -->
                         <div id="activeAdState" class="hidden w-full h-full">
-                            <!-- Ad will be loaded here -->
+                            <div class="ad-container">
+                                <div class="text-center text-gray-400">
+                                    <i class="fas fa-sync fa-spin text-2xl mb-2"></i>
+                                    <p>Loading advertisement...</p>
+                                </div>
+                            </div>
                         </div>
-                        <div id="countdownState" class="hidden text-center">
-                            <div class="countdown-timer" id="countdown">15</div>
-                            <p class="text-white mt-2">Please watch the ad to earn coins</p>
+                        
+                        <!-- Countdown Overlay -->
+                        <div id="countdownState" class="ad-overlay hidden">
+                            <div class="text-center">
+                                <div class="countdown-timer mb-4" id="countdown">15</div>
+                                <p class="text-white text-lg font-semibold">Please watch the ad</p>
+                                <p class="text-gray-400 mt-2">Stay on this screen to earn coins</p>
+                            </div>
                         </div>
                     </div>
+                    
                     <button 
                         onclick="startAd()"
                         id="watchButton"
-                        class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        class="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 py-4 rounded-2xl font-bold text-lg hover:from-yellow-300 hover:to-yellow-400 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg pulse-animation"
                     >
+                        <i class="fas fa-play-circle mr-2"></i>
                         Watch Ad & Earn Coins
                     </button>
                 </div>
 
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold">Loading ad...</p>
-                    <p class="text-gray-300 text-sm">Please wait a moment</p>
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-lg font-semibold text-white">Preparing your ad</p>
+                    <p class="text-gray-300 text-sm">This will just take a moment</p>
                 </div>
 
                 <!-- Result State -->
                 <div id="resultState" class="hidden text-center">
-                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                         <i class="fas fa-check text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Congratulations!</h3>
-                    <p class="text-gray-300 mb-4">You earned <span id="earnedCoins" class="text-yellow-300 font-bold">0</span> coins</p>
+                    <h3 class="text-2xl font-bold text-white mb-2">Congratulations!</h3>
+                    <p class="text-gray-300 mb-2">You successfully watched the ad</p>
+                    <p class="text-gray-300 mb-4">You earned <span id="earnedCoins" class="text-yellow-300 font-bold text-xl">0</span> coins</p>
                     <button 
                         onclick="resetAd()"
-                        class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105"
+                        class="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 py-4 rounded-2xl font-bold text-lg hover:from-yellow-300 hover:to-yellow-400 transition-all duration-300 transform hover:scale-105 shadow-lg"
                     >
+                        <i class="fas fa-redo mr-2"></i>
                         Watch Another Ad
                     </button>
                 </div>
@@ -133,11 +206,15 @@
 
             <!-- Recent Earnings -->
             <div class="premium-card rounded-3xl p-6 text-white">
-                <h3 class="text-lg font-bold mb-4">Recent Earnings</h3>
+                <h3 class="text-lg font-bold mb-4 flex items-center">
+                    <i class="fas fa-history mr-2 text-yellow-400"></i>
+                    Recent Earnings
+                </h3>
                 <div id="recentEarnings" class="space-y-3">
                     <div class="text-center py-8">
-                        <i class="fas fa-history text-3xl text-gray-400 mb-2"></i>
-                        <p class="text-gray-400">No recent earnings</p>
+                        <i class="fas fa-clock text-3xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-400">No earnings yet today</p>
+                        <p class="text-gray-500 text-sm mt-1">Watch ads to see your earnings here</p>
                     </div>
                 </div>
             </div>
@@ -145,7 +222,7 @@
     </section>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-t border-white/20">
+    <nav class="fixed bottom-0 left-0 right-0 glass-effect border-t border-white/20">
         <div class="container mx-auto px-4 py-3">
             <div class="grid grid-cols-4 gap-4">
                 <a href="dashboard.html" class="text-center text-white hover:text-yellow-400 transition-colors">
@@ -181,7 +258,7 @@
         let currentUser = null;
         let todayEarnings = [];
         let countdownInterval = null;
-        let currentAdElement = null;
+        let adLoaded = false;
 
         async function loadWatchPage() {
             try {
@@ -227,6 +304,7 @@
                 if (watchedToday >= 20) {
                     document.getElementById('watchButton').disabled = true;
                     document.getElementById('watchButton').textContent = 'Daily Limit Reached';
+                    document.getElementById('watchButton').classList.remove('pulse-animation');
                 }
 
             } catch (error) {
@@ -250,17 +328,17 @@
                 
                 if (data && data.length > 0) {
                     container.innerHTML = data.map(earning => `
-                        <div class="flex justify-between items-center py-2 border-b border-white/10 last:border-b-0">
+                        <div class="flex justify-between items-center py-3 border-b border-white/10 last:border-b-0">
                             <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                                    <i class="fas fa-tv text-yellow-400 text-sm"></i>
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 flex items-center justify-center">
+                                    <i class="fas fa-tv text-white text-sm"></i>
                                 </div>
                                 <div>
                                     <div class="font-semibold">Watch Ad</div>
-                                    <div class="text-xs text-gray-300">${new Date(earning.created_at).toLocaleTimeString()}</div>
+                                    <div class="text-xs text-gray-300">${new Date(earning.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                                 </div>
                             </div>
-                            <div class="text-green-400 font-bold">+${earning.coins}</div>
+                            <div class="text-green-400 font-bold text-lg">+${earning.coins}</div>
                         </div>
                     `).join('');
                 }
@@ -284,7 +362,7 @@
                 // Load ad after a short delay
                 setTimeout(() => {
                     loadAd();
-                }, 1000);
+                }, 1500);
 
             } catch (error) {
                 console.error('Start ad error:', error);
@@ -307,21 +385,20 @@
 
                 // Clear any previous ad content
                 const activeAdState = document.getElementById('activeAdState');
-                activeAdState.innerHTML = '<div class="ad-container" id="adContainerElement"></div>';
+                activeAdState.innerHTML = `
+                    <div class="ad-container">
+                        <div class="text-center text-white p-4">
+                            <i class="fas fa-ad text-3xl text-yellow-400 mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">Advertisement</h3>
+                            <p class="text-gray-400">Your ad content will appear here</p>
+                        </div>
+                    </div>
+                `;
 
-                // Load the new ad code
-                const adContainer = document.getElementById('adContainerElement');
-                if (adContainer) {
-                    // Create and append the ad script
-                    const adScript = document.createElement('script');
-                    adScript.textContent = `
-                        (function(s){
-                            s.dataset.zone='10036680';
-                            s.src='https://groleegni.net/vignette.min.js';
-                        })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-                    `;
-                    adContainer.appendChild(adScript);
-                }
+                // Load the ad script after a short delay
+                setTimeout(() => {
+                    loadAdScript();
+                }, 500);
 
                 // Start countdown
                 startCountdown();
@@ -330,6 +407,25 @@
                 console.error('Load ad error:', error);
                 resetAd();
                 showNotification('Failed to load advertisement', 'error');
+            }
+        }
+
+        function loadAdScript() {
+            try {
+                // Create and load the ad script
+                const script = document.createElement('script');
+                script.textContent = `
+                    (function(s){
+                        s.dataset.zone='10036680';
+                        s.src='https://groleegni.net/vignette.min.js';
+                    })(document.body.appendChild(document.createElement('script')));
+                `;
+                document.body.appendChild(script);
+                
+                adLoaded = true;
+                
+            } catch (error) {
+                console.error('Error loading ad script:', error);
             }
         }
 
@@ -402,7 +498,7 @@
                 await loadTodayEarnings();
                 await loadRecentEarnings();
 
-                showNotification(`+${coins} coins earned!`, 'success');
+                showNotification(`🎉 +${coins} coins earned!`, 'success');
 
             } catch (error) {
                 console.error('Process ad completion error:', error);
@@ -428,6 +524,7 @@
             
             // Clear ad content
             document.getElementById('activeAdState').innerHTML = '';
+            adLoaded = false;
             
             // Re-enable watch button if limit not reached
             if (todayEarnings.length < 20) {
@@ -437,7 +534,12 @@
 
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
-            notification.textContent = message;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} text-lg"></i>
+                    <span>${message}</span>
+                </div>
+            `;
             notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-transform duration-300 ${
                 type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
             }`;
