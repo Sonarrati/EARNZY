@@ -310,6 +310,9 @@
             notification: document.getElementById('notification')
         };
 
+        // New ad URL
+        const AD_TAG_URL = "https://www.effectivegatecpm.com/p76pvhyat?key=43e72cfb8453acf11006e08713baba27";
+
         async function loadWatchPage() {
             try {
                 // Check authentication
@@ -409,7 +412,7 @@
                 elements.adLoadingState.classList.remove('hidden');
                 elements.watchButton.disabled = true;
 
-                // Initialize video player after a short delay
+                // Initialize video player after 2 seconds
                 setTimeout(() => {
                     initializeVideoPlayer();
                 }, 2000);
@@ -433,16 +436,17 @@
                 // Initialize Video.js player
                 videoPlayer = videojs('my-video', {
                     controls: true,
-                    autoplay: false,
+                    autoplay: true,
                     preload: 'auto',
                     fluid: true,
-                    playbackRates: [0.5, 1, 1.5, 2]
+                    playbackRates: [0.5, 1, 1.5, 2],
+                    muted: true // Start muted for autoplay
                 });
 
-                // Initialize IMA plugin
+                // Initialize IMA plugin with the new ad tag URL
                 videoPlayer.ima({
-                    adTagUrl: "https://youradexchange.com/video/select.php?r=10515750",
-                    // adTagUrl: "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=",
+                    adTagUrl: AD_TAG_URL,
+                    debug: true // Enable debug for troubleshooting
                 });
 
                 // Start countdown
@@ -451,7 +455,15 @@
                 // Event listeners for ad events
                 videoPlayer.on('ads-ready', function() {
                     console.log('Ads are ready - starting ad playback');
+                    // Request and play ads
+                    videoPlayer.ima.requestAds();
                     videoPlayer.ima.playAd();
+                });
+
+                videoPlayer.on('adstart', function() {
+                    console.log('Ad started playing');
+                    // Unmute when ad starts
+                    videoPlayer.muted(false);
                 });
 
                 videoPlayer.on('adended', function() {
@@ -459,14 +471,25 @@
                     processAdCompletion();
                 });
 
-                videoPlayer.on('aderror', function() {
-                    console.log('Ad error occurred');
+                videoPlayer.on('aderror', function(error) {
+                    console.log('Ad error occurred:', error);
+                    showNotification('Ad failed to load, using fallback', 'warning');
+                    showFallbackAd();
+                });
+
+                videoPlayer.on('nopreroll', function() {
+                    console.log('No preroll ad available');
+                    showNotification('No ad available, using fallback', 'warning');
                     showFallbackAd();
                 });
 
                 // Initialize IMA
-                videoPlayer.ima.initializeAdDisplayContainer();
-                videoPlayer.ima.requestAds();
+                try {
+                    videoPlayer.ima.initializeAdDisplayContainer();
+                } catch (e) {
+                    console.log('IMA initialization error:', e);
+                    showFallbackAd();
+                }
 
             } catch (error) {
                 console.error('Video player initialization error:', error);
@@ -476,12 +499,26 @@
 
         function showFallbackAd() {
             // Fallback if video ads fail
-            elements.videoAdState.classList.add('hidden');
-            elements.countdownState.classList.remove('hidden');
+            console.log('Showing fallback ad');
             
-            showNotification('Loading backup advertisement...', 'info');
+            // Create a simple fallback ad experience
+            elements.videoAdState.innerHTML = `
+                <div class="ad-container">
+                    <div class="ad-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="text-center text-white p-8">
+                            <i class="fas fa-ad text-4xl text-yellow-400 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-3">Special Advertisement</h3>
+                            <p class="text-lg mb-4">Thank you for watching this advertisement</p>
+                            <div class="text-sm text-gray-200">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Please wait while we process your reward
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
             
-            // Start countdown for fallback ad
+            // Continue with countdown
             startCountdown();
         }
 
@@ -500,7 +537,7 @@
 
                 if (seconds <= 0) {
                     clearInterval(countdownInterval);
-                    // Only process completion if video didn't already trigger it
+                    // Only process completion if not already processed
                     if (!elements.resultState.classList.contains('flex')) {
                         processAdCompletion();
                     }
@@ -597,6 +634,22 @@
             elements.countdownState.classList.add('hidden');
             elements.adLoadingState.classList.add('hidden');
             elements.initialAdState.classList.remove('hidden');
+            
+            // Reset video content
+            elements.videoAdState.innerHTML = `
+                <div class="ad-container">
+                    <div class="ad-content">
+                        <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" playsinline>
+                            <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+                            <p class="vjs-no-js">
+                                To view this video please enable JavaScript, and consider upgrading to a
+                                web browser that
+                                <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                            </p>
+                        </video>
+                    </div>
+                </div>
+            `;
             
             // Re-enable watch button if limit not reached
             if (todayEarnings.length < 20) {
