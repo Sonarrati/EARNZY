@@ -7,6 +7,10 @@
     <title>Watch Ads - Earnzy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
+    <!-- IMA CSS -->
+    <link href="https://cdn.rawgit.com/googleads/videojs-ima/master/dist/videojs.ima.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
@@ -75,26 +79,26 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .ad-content {
-            width: 100%;
-            height: 100%;
-            min-height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-        }
         .hidden {
             display: none !important;
         }
         .flex {
             display: flex;
         }
-        #adIframe {
+        /* Video.js Custom Styles */
+        #my-video {
             width: 100%;
             height: 100%;
-            border: none;
             border-radius: 12px;
+        }
+        .video-js {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+        .vjs-control-bar {
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
         .ad-loading {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -118,7 +122,7 @@
                         <i class="fas fa-arrow-left text-lg"></i>
                     </a>
                     <div>
-                        <h1 class="text-xl font-bold text-white">Watch Ads</h1>
+                        <h1 class="text-xl font-bold text-white">Watch Ads - Earnzy</h1>
                         <p class="text-gray-200 text-sm">Earn 10-20 coins per ad</p>
                     </div>
                 </div>
@@ -138,7 +142,7 @@
                     <i class="fas fa-play-circle text-3xl text-white"></i>
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Watch & Earn</h2>
-                <p class="text-gray-300 mb-4">Watch short ads and earn coins instantly</p>
+                <p class="text-gray-300 mb-4">Watch video ads and earn coins instantly</p>
                 <div class="glass-effect rounded-2xl p-4 mb-6">
                     <div class="flex justify-between text-sm mb-2">
                         <span class="text-gray-300">Coins per ad:</span>
@@ -161,21 +165,23 @@
                         <div class="ad-placeholder">
                             <i class="fas fa-play-circle text-4xl text-yellow-400 mb-4"></i>
                             <h3 class="text-white font-semibold text-lg mb-2">Ready to Earn</h3>
-                            <p class="text-gray-400">Click below to watch ads and earn coins</p>
+                            <p class="text-gray-400">Click below to watch video ads and earn coins</p>
                         </div>
                     </div>
                     
-                    <!-- Active Ad State - Hidden by default -->
-                    <div id="activeAdState" class="hidden w-full h-full">
+                    <!-- Video Ad State - Hidden by default -->
+                    <div id="videoAdState" class="hidden w-full h-full">
                         <div class="ad-container">
-                            <div class="ad-content" id="adContent">
-                                <!-- Ad will be loaded here -->
-                                <div id="adLoading" class="ad-loading">
-                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
-                                    <p class="text-lg font-semibold">Loading Ad</p>
-                                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
-                                </div>
-                                <iframe id="adIframe" class="hidden"></iframe>
+                            <div class="ad-content">
+                                <!-- Video.js Player -->
+                                <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" playsinline>
+                                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+                                    <p class="vjs-no-js">
+                                        To view this video please enable JavaScript, and consider upgrading to a
+                                        web browser that
+                                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                                    </p>
+                                </video>
                             </div>
                         </div>
                     </div>
@@ -188,6 +194,15 @@
                             <p class="text-gray-400 mt-2">Stay on this screen to earn coins</p>
                         </div>
                     </div>
+
+                    <!-- Ad Loading State -->
+                    <div id="adLoadingState" class="ad-overlay hidden">
+                        <div class="text-center">
+                            <div class="animate-spin rounded-full h-16 w-16 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                            <p class="text-lg font-semibold text-white">Loading Ad</p>
+                            <p class="text-gray-400 mt-2">Please wait while we prepare your ad</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Watch Button -->
@@ -197,7 +212,7 @@
                     class="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 py-4 rounded-2xl font-bold text-lg hover:from-yellow-300 hover:to-yellow-400 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg pulse-animation"
                 >
                     <i class="fas fa-play-circle mr-2"></i>
-                    Watch Ad & Earn Coins
+                    Watch Video Ad & Earn Coins
                 </button>
 
                 <!-- Result State -->
@@ -262,6 +277,11 @@
     <!-- Notification -->
     <div id="notification" class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-transform duration-300 hidden"></div>
 
+    <!-- Video.js Library -->
+    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+    <!-- IMA Plugin -->
+    <script src="https://cdn.rawgit.com/googleads/videojs-ima/master/dist/videojs.ima.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Supabase
@@ -272,17 +292,16 @@
         let currentUser = null;
         let todayEarnings = [];
         let countdownInterval = null;
+        let videoPlayer = null;
 
         // DOM elements
         const elements = {
             initialAdState: document.getElementById('initialAdState'),
-            activeAdState: document.getElementById('activeAdState'),
+            videoAdState: document.getElementById('videoAdState'),
             countdownState: document.getElementById('countdownState'),
+            adLoadingState: document.getElementById('adLoadingState'),
             resultState: document.getElementById('resultState'),
             watchButton: document.getElementById('watchButton'),
-            adContent: document.getElementById('adContent'),
-            adLoading: document.getElementById('adLoading'),
-            adIframe: document.getElementById('adIframe'),
             countdown: document.getElementById('countdown'),
             todayEarnings: document.getElementById('todayEarnings'),
             watchedToday: document.getElementById('watchedToday'),
@@ -290,9 +309,6 @@
             recentEarnings: document.getElementById('recentEarnings'),
             notification: document.getElementById('notification')
         };
-
-        // New ad URL
-        const AD_URL = "https://esteemedfinance.com/bg3PVi0KP.3JpNvGb_mxVTJAZLDl0u2xNMjTc/1GOdTyA/5-L/TkY/2QNYzpUL5NMSTdAf";
 
         async function loadWatchPage() {
             try {
@@ -381,25 +397,21 @@
 
         function startAd() {
             try {
-                console.log('Starting ad...');
+                console.log('Starting video ad...');
                 
                 // Check daily limit
                 if (todayEarnings.length >= 20) {
                     throw new Error('Daily limit reached');
                 }
 
-                // Hide initial state and show ad container immediately
+                // Hide initial state and show loading
                 elements.initialAdState.classList.add('hidden');
-                elements.activeAdState.classList.remove('hidden');
+                elements.adLoadingState.classList.remove('hidden');
                 elements.watchButton.disabled = true;
 
-                // Show loading state
-                elements.adLoading.classList.remove('hidden');
-                elements.adIframe.classList.add('hidden');
-
-                // Load ad after 2 seconds
+                // Initialize video player after a short delay
                 setTimeout(() => {
-                    loadAd();
+                    initializeVideoPlayer();
                 }, 2000);
 
             } catch (error) {
@@ -409,49 +421,67 @@
             }
         }
 
-        function loadAd() {
+        function initializeVideoPlayer() {
             try {
-                console.log('Loading ad...');
+                console.log('Initializing video player with IMA ads...');
                 
-                // Hide loading and show iframe
-                elements.adLoading.classList.add('hidden');
-                elements.adIframe.classList.remove('hidden');
-                
-                // Load the ad in iframe
-                elements.adIframe.src = AD_URL;
-                
-                // Show countdown overlay
+                // Hide loading and show video player
+                elements.adLoadingState.classList.add('hidden');
+                elements.videoAdState.classList.remove('hidden');
                 elements.countdownState.classList.remove('hidden');
+
+                // Initialize Video.js player
+                videoPlayer = videojs('my-video', {
+                    controls: true,
+                    autoplay: false,
+                    preload: 'auto',
+                    fluid: true,
+                    playbackRates: [0.5, 1, 1.5, 2]
+                });
+
+                // Initialize IMA plugin
+                videoPlayer.ima({
+                    adTagUrl: "https://youradexchange.com/video/select.php?r=10515750",
+                    // adTagUrl: "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=",
+                });
 
                 // Start countdown
                 startCountdown();
 
-                console.log('Ad loaded successfully');
+                // Event listeners for ad events
+                videoPlayer.on('ads-ready', function() {
+                    console.log('Ads are ready - starting ad playback');
+                    videoPlayer.ima.playAd();
+                });
+
+                videoPlayer.on('adended', function() {
+                    console.log('Ad finished playing');
+                    processAdCompletion();
+                });
+
+                videoPlayer.on('aderror', function() {
+                    console.log('Ad error occurred');
+                    showFallbackAd();
+                });
+
+                // Initialize IMA
+                videoPlayer.ima.initializeAdDisplayContainer();
+                videoPlayer.ima.requestAds();
 
             } catch (error) {
-                console.error('Load ad error:', error);
+                console.error('Video player initialization error:', error);
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
-            // Fallback ad content in case external ad fails
-            elements.adContent.innerHTML = `
-                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="fas fa-ad text-3xl text-yellow-400 mb-3"></i>
-                    <h3 class="text-lg font-semibold mb-2">Special Offer</h3>
-                    <p class="text-gray-200 mb-4">Thank you for watching this advertisement</p>
-                    <div class="text-sm text-gray-300">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Advertisement - Watch full ad to earn coins
-                    </div>
-                </div>
-            `;
-            
-            // Show countdown overlay
+            // Fallback if video ads fail
+            elements.videoAdState.classList.add('hidden');
             elements.countdownState.classList.remove('hidden');
             
-            // Start countdown
+            showNotification('Loading backup advertisement...', 'info');
+            
+            // Start countdown for fallback ad
             startCountdown();
         }
 
@@ -470,7 +500,10 @@
 
                 if (seconds <= 0) {
                     clearInterval(countdownInterval);
-                    processAdCompletion();
+                    // Only process completion if video didn't already trigger it
+                    if (!elements.resultState.classList.contains('flex')) {
+                        processAdCompletion();
+                    }
                 }
             }, 1000);
         }
@@ -480,8 +513,14 @@
                 console.log('Processing ad completion...');
                 
                 // Hide ad and countdown
-                elements.activeAdState.classList.add('hidden');
+                elements.videoAdState.classList.add('hidden');
                 elements.countdownState.classList.add('hidden');
+
+                // Clean up video player
+                if (videoPlayer) {
+                    videoPlayer.dispose();
+                    videoPlayer = null;
+                }
 
                 // Process ad reward
                 const { data: { user } } = await supabase.auth.getUser();
@@ -546,30 +585,23 @@
                 countdownInterval = null;
             }
 
+            // Clean up video player
+            if (videoPlayer) {
+                videoPlayer.dispose();
+                videoPlayer = null;
+            }
+
             // Reset all states to initial
             elements.resultState.classList.add('hidden');
-            elements.activeAdState.classList.add('hidden');
+            elements.videoAdState.classList.add('hidden');
             elements.countdownState.classList.add('hidden');
+            elements.adLoadingState.classList.add('hidden');
             elements.initialAdState.classList.remove('hidden');
-            
-            // Reset ad content
-            elements.adContent.innerHTML = `
-                <div id="adLoading" class="ad-loading">
-                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold">Loading Ad</p>
-                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
-                </div>
-                <iframe id="adIframe" class="hidden"></iframe>
-            `;
-            
-            // Re-cache DOM elements
-            elements.adLoading = document.getElementById('adLoading');
-            elements.adIframe = document.getElementById('adIframe');
             
             // Re-enable watch button if limit not reached
             if (todayEarnings.length < 20) {
                 elements.watchButton.disabled = false;
-                elements.watchButton.innerHTML = '<i class="fas fa-play-circle mr-2"></i>Watch Ad & Earn Coins';
+                elements.watchButton.innerHTML = '<i class="fas fa-play-circle mr-2"></i>Watch Video Ad & Earn Coins';
             }
         }
 
@@ -596,13 +628,13 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', loadWatchPage);
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', function() {
+            if (videoPlayer) {
+                videoPlayer.dispose();
+            }
+        });
     </script>
 </body>
 </html>
-
-<script>
-    const player = videojs("my-video");
-    player.ima({
-        adTagUrl: "https://youradexchange.com/video/select.php?r=10515750",
-    });
-</script>
