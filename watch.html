@@ -90,7 +90,7 @@
         .flex {
             display: flex;
         }
-        #externalAdContainer {
+        #adIframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -103,6 +103,8 @@
             justify-content: center;
             flex-direction: column;
             color: white;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
@@ -166,13 +168,14 @@
                     <!-- Active Ad State - Hidden by default -->
                     <div id="activeAdState" class="hidden w-full h-full">
                         <div class="ad-container">
-                            <div class="ad-content">
-                                <!-- External ad will be loaded here -->
-                                <div id="externalAdContainer" class="ad-loading">
+                            <div class="ad-content" id="adContent">
+                                <!-- Ad will be loaded here -->
+                                <div id="adLoading" class="ad-loading">
                                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
                                     <p class="text-lg font-semibold">Loading Ad</p>
                                     <p class="text-gray-400 text-sm mt-1">Please wait...</p>
                                 </div>
+                                <iframe id="adIframe" class="hidden"></iframe>
                             </div>
                         </div>
                     </div>
@@ -196,13 +199,6 @@
                     <i class="fas fa-play-circle mr-2"></i>
                     Watch Ad & Earn Coins
                 </button>
-
-                <!-- Loading State -->
-                <div id="loadingState" class="hidden text-center mt-4">
-                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold text-white">Loading Ad</p>
-                    <p class="text-gray-300 text-sm">Please wait...</p>
-                </div>
 
                 <!-- Result State -->
                 <div id="resultState" class="hidden text-center mt-4">
@@ -282,10 +278,11 @@
             initialAdState: document.getElementById('initialAdState'),
             activeAdState: document.getElementById('activeAdState'),
             countdownState: document.getElementById('countdownState'),
-            loadingState: document.getElementById('loadingState'),
             resultState: document.getElementById('resultState'),
             watchButton: document.getElementById('watchButton'),
-            externalAdContainer: document.getElementById('externalAdContainer'),
+            adContent: document.getElementById('adContent'),
+            adLoading: document.getElementById('adLoading'),
+            adIframe: document.getElementById('adIframe'),
             countdown: document.getElementById('countdown'),
             todayEarnings: document.getElementById('todayEarnings'),
             watchedToday: document.getElementById('watchedToday'),
@@ -294,7 +291,7 @@
             notification: document.getElementById('notification')
         };
 
-        // New ad URL from your provided code
+        // New ad URL
         const AD_URL = "https://esteemedfinance.com/bg3PVi0KP.3JpNvGb_mxVTJAZLDl0u2xNMjTc/1GOdTyA/5-L/TkY/2QNYzpUL5NMSTdAf";
 
         async function loadWatchPage() {
@@ -391,80 +388,55 @@
                     throw new Error('Daily limit reached');
                 }
 
-                // Hide initial state and show loading
+                // Hide initial state and show ad container immediately
                 elements.initialAdState.classList.add('hidden');
-                elements.loadingState.classList.remove('hidden');
+                elements.activeAdState.classList.remove('hidden');
                 elements.watchButton.disabled = true;
 
-                // Load ad after a short delay
+                // Show loading state
+                elements.adLoading.classList.remove('hidden');
+                elements.adIframe.classList.add('hidden');
+
+                // Load ad after 2 seconds
                 setTimeout(() => {
-                    showAd();
-                }, 1000);
+                    loadAd();
+                }, 2000);
 
             } catch (error) {
                 console.error('Start ad error:', error);
                 showNotification(error.message || 'Failed to load ad', 'error');
-                elements.loadingState.classList.add('hidden');
-                elements.watchButton.disabled = false;
+                resetAd();
             }
         }
 
-        function showAd() {
+        function loadAd() {
             try {
-                console.log('Showing ad...');
+                console.log('Loading ad...');
                 
-                elements.loadingState.classList.add('hidden');
+                // Hide loading and show iframe
+                elements.adLoading.classList.add('hidden');
+                elements.adIframe.classList.remove('hidden');
                 
-                // Show active ad state
-                elements.activeAdState.classList.remove('hidden');
+                // Load the ad in iframe
+                elements.adIframe.src = AD_URL;
+                
+                // Show countdown overlay
                 elements.countdownState.classList.remove('hidden');
-
-                // Load external ad
-                loadExternalAd();
 
                 // Start countdown
                 startCountdown();
 
-            } catch (error) {
-                console.error('Show ad error:', error);
-                resetAd();
-                showNotification('Failed to load advertisement', 'error');
-            }
-        }
+                console.log('Ad loaded successfully');
 
-        function loadExternalAd() {
-            try {
-                console.log('Loading external ad from:', AD_URL);
-                
-                // Create iframe for external ad
-                const iframe = document.createElement('iframe');
-                iframe.id = 'adIframe';
-                iframe.src = AD_URL;
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.border = 'none';
-                iframe.style.borderRadius = '12px';
-                iframe.onload = () => {
-                    console.log('External ad loaded successfully');
-                };
-                iframe.onerror = () => {
-                    console.error('Failed to load external ad');
-                    showFallbackAd();
-                };
-
-                // Clear existing content and add iframe
-                elements.externalAdContainer.innerHTML = '';
-                elements.externalAdContainer.appendChild(iframe);
-                
             } catch (error) {
-                console.error('Error loading external ad:', error);
+                console.error('Load ad error:', error);
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
             // Fallback ad content in case external ad fails
-            elements.externalAdContainer.innerHTML = `
+            elements.adContent.innerHTML = `
                 <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
                     <i class="fas fa-ad text-3xl text-yellow-400 mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Special Offer</h3>
@@ -475,6 +447,12 @@
                     </div>
                 </div>
             `;
+            
+            // Show countdown overlay
+            elements.countdownState.classList.remove('hidden');
+            
+            // Start countdown
+            startCountdown();
         }
 
         function startCountdown() {
@@ -501,10 +479,9 @@
             try {
                 console.log('Processing ad completion...');
                 
-                // Hide ad and show loading
+                // Hide ad and countdown
                 elements.activeAdState.classList.add('hidden');
                 elements.countdownState.classList.add('hidden');
-                elements.loadingState.classList.remove('hidden');
 
                 // Process ad reward
                 const { data: { user } } = await supabase.auth.getUser();
@@ -544,7 +521,6 @@
                 if (earningError) throw earningError;
 
                 // Show result
-                elements.loadingState.classList.add('hidden');
                 elements.resultState.classList.remove('hidden');
                 elements.earnedCoins.textContent = coins;
 
@@ -556,7 +532,6 @@
 
             } catch (error) {
                 console.error('Process ad completion error:', error);
-                elements.loadingState.classList.add('hidden');
                 resetAd();
                 showNotification(error.message || 'Failed to process ad', 'error');
             }
@@ -575,15 +550,21 @@
             elements.resultState.classList.add('hidden');
             elements.activeAdState.classList.add('hidden');
             elements.countdownState.classList.add('hidden');
-            elements.loadingState.classList.add('hidden');
             elements.initialAdState.classList.remove('hidden');
             
-            // Clear ad content
-            elements.externalAdContainer.innerHTML = `
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
-                <p class="text-lg font-semibold">Loading Ad</p>
-                <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+            // Reset ad content
+            elements.adContent.innerHTML = `
+                <div id="adLoading" class="ad-loading">
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-lg font-semibold">Loading Ad</p>
+                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+                </div>
+                <iframe id="adIframe" class="hidden"></iframe>
             `;
+            
+            // Re-cache DOM elements
+            elements.adLoading = document.getElementById('adLoading');
+            elements.adIframe = document.getElementById('adIframe');
             
             // Re-enable watch button if limit not reached
             if (todayEarnings.length < 20) {
