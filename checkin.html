@@ -23,6 +23,94 @@
             background: linear-gradient(135deg, #FFD700, #FFA500);
             transform: scale(1.1);
         }
+        #adDisplay {
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .countdown-timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+        }
+        .ad-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            border-radius: 16px;
+            position: relative;
+        }
+        .ad-placeholder {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+            border: 2px dashed #6b7280;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .ad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .ad-content {
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .flex {
+            display: flex;
+        }
+        #externalAdContainer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+        .ad-loading {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -64,24 +152,58 @@
                             <i class="fas fa-gift text-2xl text-gray-800"></i>
                         </div>
                         <h3 id="statusTitle" class="text-xl font-bold mb-2">Ready to Check-in!</h3>
-                        <p id="statusMessage" class="text-gray-300">Check in today to continue your streak</p>
+                        <p id="statusMessage" class="text-gray-300">Watch an ad to claim your daily reward</p>
                         <div id="todaysReward" class="text-yellow-300 font-bold text-2xl mt-2">+10 coins</div>
                     </div>
                 </div>
 
+                <!-- Ad Display Area (Hidden by default) -->
+                <div id="adDisplay" class="rounded-2xl mb-4 overflow-hidden hidden">
+                    <!-- Active Ad State -->
+                    <div id="activeAdState" class="w-full h-full">
+                        <div class="ad-container">
+                            <div class="ad-content">
+                                <!-- External ad will be loaded here -->
+                                <div id="externalAdContainer" class="ad-loading">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                                    <p class="text-lg font-semibold">Loading Ad</p>
+                                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Countdown Overlay -->
+                    <div id="countdownState" class="ad-overlay">
+                        <div class="text-center">
+                            <div class="countdown-timer mb-4" id="countdown">15</div>
+                            <p class="text-white text-lg font-semibold">Please watch the ad</p>
+                            <p class="text-gray-400 mt-2">Stay on this screen to claim your reward</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden text-center mt-4">
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-lg font-semibold text-white">Processing Reward</p>
+                    <p class="text-gray-300 text-sm">Please wait...</p>
+                </div>
+
+                <!-- Check-in Button -->
                 <button 
-                    onclick="dailyCheckin()"
+                    onclick="startAdForCheckin()"
                     id="checkinButton"
-                    class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none pulse-animation"
                 >
-                    Check-in Now
+                    Watch Ad & Claim Reward
                 </button>
             </div>
 
             <!-- Streak Calendar -->
             <div class="premium-card rounded-3xl p-6 text-white mb-6">
                 <h3 class="text-lg font-bold mb-4">Your Streak Calendar</h3>
-                <div class="grid grid-cols-7 gap-2 mb-4">
+                <div class="grid grid-cols-7 gap-2 mb-4" id="streakCalendar">
                     <!-- Days will be generated here -->
                 </div>
                 <div class="text-center text-sm text-gray-300">
@@ -210,6 +332,29 @@
 
         let currentUser = null;
         let userData = null;
+        let countdownInterval = null;
+
+        // Ad URL for daily check-in
+        const DAILY_CHECKIN_AD_URL = "https://esteemedfinance.com/bs3YV.0bPz3fpmv-bamnV/JqZDDM0u2mNBj/cF1DONTqA/5ULHTsYC2XN/zHUs5rMhT/AA";
+
+        // DOM elements
+        const elements = {
+            checkinStatus: document.getElementById('checkinStatus'),
+            adDisplay: document.getElementById('adDisplay'),
+            activeAdState: document.getElementById('activeAdState'),
+            countdownState: document.getElementById('countdownState'),
+            loadingState: document.getElementById('loadingState'),
+            checkinButton: document.getElementById('checkinButton'),
+            externalAdContainer: document.getElementById('externalAdContainer'),
+            countdown: document.getElementById('countdown'),
+            currentStreak: document.getElementById('currentStreak'),
+            todaysReward: document.getElementById('todaysReward'),
+            statusIcon: document.getElementById('statusIcon'),
+            statusTitle: document.getElementById('statusTitle'),
+            statusMessage: document.getElementById('statusMessage'),
+            streakCalendar: document.getElementById('streakCalendar'),
+            notification: document.getElementById('notification')
+        };
 
         async function loadCheckinPage() {
             try {
@@ -241,7 +386,7 @@
                 if (error) throw error;
 
                 userData = data;
-                document.getElementById('currentStreak').textContent = data.daily_streak || 0;
+                elements.currentStreak.textContent = data.daily_streak || 0;
 
                 // Check if already checked in today
                 const today = new Date().toISOString().split('T')[0];
@@ -249,18 +394,19 @@
 
                 if (lastCheckin === today) {
                     // Already checked in today
-                    document.getElementById('checkinButton').disabled = true;
-                    document.getElementById('checkinButton').textContent = 'Already Checked-in Today';
+                    elements.checkinButton.disabled = true;
+                    elements.checkinButton.textContent = 'Already Checked-in Today';
+                    elements.checkinButton.classList.remove('pulse-animation');
                     
-                    document.getElementById('statusIcon').className = 'w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4';
-                    document.getElementById('statusIcon').innerHTML = '<i class="fas fa-check text-2xl text-white"></i>';
-                    document.getElementById('statusTitle').textContent = 'Already Checked-in!';
-                    document.getElementById('statusMessage').textContent = 'Come back tomorrow to continue your streak';
+                    elements.statusIcon.className = 'w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4';
+                    elements.statusIcon.innerHTML = '<i class="fas fa-check text-2xl text-white"></i>';
+                    elements.statusTitle.textContent = 'Already Checked-in!';
+                    elements.statusMessage.textContent = 'Come back tomorrow to continue your streak';
                     
                     // Calculate today's reward
                     const streak = data.daily_streak || 1;
                     const todaysReward = Math.min(10 + (streak - 1) * 15, 100);
-                    document.getElementById('todaysReward').textContent = `+${todaysReward} coins earned`;
+                    elements.todaysReward.textContent = `+${todaysReward} coins earned`;
                 } else {
                     // Calculate today's potential reward
                     const streak = data.daily_streak || 0;
@@ -274,7 +420,7 @@
                     }
 
                     const todaysReward = Math.min(10 + (newStreak - 1) * 15, 100);
-                    document.getElementById('todaysReward').textContent = `+${todaysReward} coins today`;
+                    elements.todaysReward.textContent = `+${todaysReward} coins today`;
                 }
 
             } catch (error) {
@@ -283,8 +429,7 @@
         }
 
         function generateStreakCalendar() {
-            const calendar = document.querySelector('.grid.grid-cols-7');
-            calendar.innerHTML = '';
+            elements.streakCalendar.innerHTML = '';
 
             const today = new Date();
             for (let i = 6; i >= 0; i--) {
@@ -315,14 +460,121 @@
                     <div class="text-sm font-bold">${dayNumber}</div>
                 `;
 
-                calendar.appendChild(dayElement);
+                elements.streakCalendar.appendChild(dayElement);
             }
         }
 
-        async function dailyCheckin() {
+        function startAdForCheckin() {
             try {
-                document.getElementById('checkinButton').disabled = true;
-                document.getElementById('checkinButton').textContent = 'Processing...';
+                console.log('Starting ad for daily check-in...');
+                
+                // Hide check-in status and show ad
+                elements.checkinStatus.classList.add('hidden');
+                elements.adDisplay.classList.remove('hidden');
+                elements.checkinButton.disabled = true;
+                elements.checkinButton.textContent = 'Watching Ad...';
+
+                // Load ad after a short delay
+                setTimeout(() => {
+                    showAdForCheckin();
+                }, 1000);
+
+            } catch (error) {
+                console.error('Start ad error:', error);
+                showNotification(error.message || 'Failed to load ad', 'error');
+                resetAd();
+            }
+        }
+
+        function showAdForCheckin() {
+            try {
+                console.log('Showing ad for check-in...');
+                
+                // Load external ad
+                loadExternalAd();
+
+                // Start countdown
+                startCountdown();
+
+            } catch (error) {
+                console.error('Show ad error:', error);
+                resetAd();
+                showNotification('Failed to load advertisement', 'error');
+            }
+        }
+
+        function loadExternalAd() {
+            try {
+                console.log('Loading external ad from:', DAILY_CHECKIN_AD_URL);
+                
+                // Create iframe for external ad
+                const iframe = document.createElement('iframe');
+                iframe.id = 'adIframe';
+                iframe.src = DAILY_CHECKIN_AD_URL;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '12px';
+                iframe.onload = () => {
+                    console.log('External ad loaded successfully');
+                };
+                iframe.onerror = () => {
+                    console.error('Failed to load external ad');
+                    showFallbackAd();
+                };
+
+                // Clear existing content and add iframe
+                elements.externalAdContainer.innerHTML = '';
+                elements.externalAdContainer.appendChild(iframe);
+                
+            } catch (error) {
+                console.error('Error loading external ad:', error);
+                showFallbackAd();
+            }
+        }
+
+        function showFallbackAd() {
+            // Fallback ad content in case external ad fails
+            elements.externalAdContainer.innerHTML = `
+                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                    <i class="fas fa-ad text-3xl text-yellow-400 mb-3"></i>
+                    <h3 class="text-lg font-semibold mb-2">Daily Check-in Reward</h3>
+                    <p class="text-gray-200 mb-4">Watch this ad to claim your daily reward</p>
+                    <div class="text-sm text-gray-300">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Advertisement - Watch full ad to claim reward
+                    </div>
+                </div>
+            `;
+        }
+
+        function startCountdown() {
+            let seconds = 15;
+            elements.countdown.textContent = seconds;
+
+            // Clear any existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            countdownInterval = setInterval(() => {
+                seconds--;
+                elements.countdown.textContent = seconds;
+
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    processCheckinAfterAd();
+                }
+            }, 1000);
+        }
+
+        async function processCheckinAfterAd() {
+            try {
+                console.log('Processing check-in after ad...');
+                
+                // Hide ad and show loading
+                elements.adDisplay.classList.add('hidden');
+                elements.loadingState.classList.remove('hidden');
 
                 const today = new Date().toISOString().split('T')[0];
                 const lastCheckin = userData.last_checkin;
@@ -378,34 +630,78 @@
                 if (earningError) throw earningError;
 
                 // Update UI
-                document.getElementById('statusIcon').className = 'w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4';
-                document.getElementById('statusIcon').innerHTML = '<i class="fas fa-check text-2xl text-white"></i>';
-                document.getElementById('statusTitle').textContent = 'Check-in Successful!';
-                document.getElementById('statusMessage').textContent = `Day ${streak} streak`;
-                document.getElementById('todaysReward').textContent = `+${coins} coins earned`;
+                elements.loadingState.classList.add('hidden');
+                elements.checkinStatus.classList.remove('hidden');
+                
+                elements.statusIcon.className = 'w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4';
+                elements.statusIcon.innerHTML = '<i class="fas fa-check text-2xl text-white"></i>';
+                elements.statusTitle.textContent = 'Check-in Successful!';
+                elements.statusMessage.textContent = `Day ${streak} streak`;
+                elements.todaysReward.textContent = `+${coins} coins earned`;
 
-                document.getElementById('currentStreak').textContent = streak;
-                document.getElementById('checkinButton').textContent = 'Already Checked-in Today';
+                elements.currentStreak.textContent = streak;
+                elements.checkinButton.disabled = true;
+                elements.checkinButton.textContent = 'Already Checked-in Today';
+                elements.checkinButton.classList.remove('pulse-animation');
 
                 showNotification(`Check-in successful! +${coins} coins earned`, 'success');
 
-                // Reload data
+                // Reload data and regenerate calendar
                 await loadUserData();
                 generateStreakCalendar();
 
             } catch (error) {
                 console.error('Checkin error:', error);
-                document.getElementById('checkinButton').disabled = false;
-                document.getElementById('checkinButton').textContent = 'Check-in Now';
+                elements.loadingState.classList.add('hidden');
+                elements.checkinStatus.classList.remove('hidden');
+                elements.checkinButton.disabled = false;
+                elements.checkinButton.textContent = 'Watch Ad & Claim Reward';
                 showNotification('Failed to process check-in', 'error');
             }
         }
 
+        function resetAd() {
+            console.log('Resetting ad...');
+            
+            // Clear any existing intervals
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Reset to initial state
+            elements.adDisplay.classList.add('hidden');
+            elements.loadingState.classList.add('hidden');
+            elements.checkinStatus.classList.remove('hidden');
+            
+            // Clear ad content
+            elements.externalAdContainer.innerHTML = `
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                <p class="text-lg font-semibold">Loading Ad</p>
+                <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+            `;
+            
+            // Re-enable check-in button if not already checked in
+            const today = new Date().toISOString().split('T')[0];
+            if (userData.last_checkin !== today) {
+                elements.checkinButton.disabled = false;
+                elements.checkinButton.textContent = 'Watch Ad & Claim Reward';
+            }
+        }
+
         function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
+            const notification = elements.notification;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle'} text-lg"></i>
+                    <span>${message}</span>
+                </div>
+            `;
             notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-transform duration-300 ${
-                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' :
+                type === 'warning' ? 'bg-yellow-500 text-white' :
+                'bg-blue-500 text-white'
             }`;
             notification.classList.remove('hidden');
 
