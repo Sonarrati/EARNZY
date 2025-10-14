@@ -96,6 +96,14 @@
             border: none;
             border-radius: 12px;
         }
+        .ad-loading {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -158,9 +166,13 @@
                     <!-- Active Ad State - Hidden by default -->
                     <div id="activeAdState" class="hidden w-full h-full">
                         <div class="ad-container">
-                            <div class="ad-content" id="adContent">
+                            <div class="ad-content">
                                 <!-- External ad will be loaded here -->
-                                <iframe id="externalAdContainer" src="about:blank"></iframe>
+                                <div id="externalAdContainer" class="ad-loading">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                                    <p class="text-lg font-semibold">Loading Ad</p>
+                                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,7 +285,6 @@
             loadingState: document.getElementById('loadingState'),
             resultState: document.getElementById('resultState'),
             watchButton: document.getElementById('watchButton'),
-            adContent: document.getElementById('adContent'),
             externalAdContainer: document.getElementById('externalAdContainer'),
             countdown: document.getElementById('countdown'),
             todayEarnings: document.getElementById('todayEarnings'),
@@ -283,8 +294,8 @@
             notification: document.getElementById('notification')
         };
 
-        // Actual ad URL from your provided code
-        const AD_URL = "https://esteemedfinance.com/dumFF.zmdwGONvvAZ/GIUI/KeOm/9/u/ZTU_lNk/P/T/Yk2eNPzgUy4/MwjcEhtsNqjjYq3pNUT/gDyuMGiPZjs/aUWm1/p/ddDk0Axt";
+        // New ad URL from your provided code
+        const AD_URL = "https://esteemedfinance.com/bg3PVi0KP.3JpNvGb_mxVTJAZLDl0u2xNMjTc/1GOdTyA/5-L/TkY/2QNYzpUL5NMSTdAf";
 
         async function loadWatchPage() {
             try {
@@ -425,25 +436,39 @@
             try {
                 console.log('Loading external ad from:', AD_URL);
                 
-                // Load the actual ad in iframe
-                elements.externalAdContainer.src = AD_URL;
-                
-                console.log('External ad loaded successfully');
+                // Create iframe for external ad
+                const iframe = document.createElement('iframe');
+                iframe.id = 'adIframe';
+                iframe.src = AD_URL;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '12px';
+                iframe.onload = () => {
+                    console.log('External ad loaded successfully');
+                };
+                iframe.onerror = () => {
+                    console.error('Failed to load external ad');
+                    showFallbackAd();
+                };
+
+                // Clear existing content and add iframe
+                elements.externalAdContainer.innerHTML = '';
+                elements.externalAdContainer.appendChild(iframe);
                 
             } catch (error) {
                 console.error('Error loading external ad:', error);
-                // Fallback: Show a local ad if external ad fails
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
             // Fallback ad content in case external ad fails
-            elements.adContent.innerHTML = `
+            elements.externalAdContainer.innerHTML = `
                 <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
                     <i class="fas fa-ad text-3xl text-yellow-400 mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Special Offer</h3>
-                    <p class="text-gray-200 mb-4">Limited time discount available</p>
+                    <p class="text-gray-200 mb-4">Thank you for watching this advertisement</p>
                     <div class="text-sm text-gray-300">
                         <i class="fas fa-info-circle mr-1"></i>
                         Advertisement - Watch full ad to earn coins
@@ -553,8 +578,12 @@
             elements.loadingState.classList.add('hidden');
             elements.initialAdState.classList.remove('hidden');
             
-            // Clear ad content and reset iframe
-            elements.externalAdContainer.src = "about:blank";
+            // Clear ad content
+            elements.externalAdContainer.innerHTML = `
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                <p class="text-lg font-semibold">Loading Ad</p>
+                <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+            `;
             
             // Re-enable watch button if limit not reached
             if (todayEarnings.length < 20) {
