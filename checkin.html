@@ -10,17 +10,24 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-bg { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .premium-card { 
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .stats-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .streak-day {
             transition: all 0.3s ease;
         }
         .streak-day.active {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
+            background: linear-gradient(135deg, #10b981, #059669);
             transform: scale(1.1);
         }
         #adDisplay {
@@ -37,8 +44,8 @@
         .countdown-timer {
             font-size: 3rem;
             font-weight: bold;
-            color: #fbbf24;
-            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+            color: #10b981;
+            text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
         }
         .ad-container {
             width: 100%;
@@ -115,21 +122,21 @@
 </head>
 <body class="gradient-bg min-h-screen pb-20">
     <!-- Header -->
-    <header class="bg-white/10 backdrop-blur-lg border-b border-white/20">
+    <header class="bg-white/90 backdrop-blur-lg border-b border-white/20">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <a href="dashboard.html" class="text-white">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-green-500 transition-colors">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     <div>
-                        <h1 class="text-xl font-bold text-white">Daily Check-in</h1>
-                        <p class="text-gray-200 text-sm">Build your streak for bigger rewards</p>
+                        <h1 class="text-xl font-bold text-gray-800">Daily Check-in</h1>
+                        <p class="text-gray-600 text-sm">Build your streak for bigger rewards</p>
                     </div>
                 </div>
                 <div class="text-right">
-                    <div class="text-yellow-300 font-bold text-lg" id="currentStreak">0</div>
-                    <div class="text-gray-300 text-sm">Day Streak</div>
+                    <div class="text-green-600 font-bold text-lg" id="currentStreak">0</div>
+                    <div class="text-gray-600 text-sm">Day Streak</div>
                 </div>
             </div>
         </div>
@@ -138,22 +145,22 @@
     <!-- Check-in Section -->
     <section class="p-4">
         <div class="container mx-auto">
-            <div class="premium-card rounded-3xl p-6 text-white mb-6 text-center">
-                <div class="w-20 h-20 bg-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div class="premium-card rounded-3xl p-6 text-gray-800 mb-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <i class="fas fa-calendar-check text-3xl text-white"></i>
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Daily Check-in</h2>
-                <p class="text-gray-300 mb-6">Check in daily to build your streak and earn more coins</p>
+                <p class="text-gray-600 mb-6">Check in daily to build your streak and earn more coins</p>
 
                 <!-- Check-in Status -->
-                <div id="checkinStatus" class="bg-white/20 rounded-2xl p-6 mb-6">
+                <div id="checkinStatus" class="stats-card rounded-2xl p-6 mb-6">
                     <div class="text-center">
-                        <div id="statusIcon" class="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-gift text-2xl text-gray-800"></i>
+                        <div id="statusIcon" class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-gift text-2xl text-white"></i>
                         </div>
                         <h3 id="statusTitle" class="text-xl font-bold mb-2">Ready to Check-in!</h3>
-                        <p id="statusMessage" class="text-gray-300">Watch an ad to claim your daily reward</p>
-                        <div id="todaysReward" class="text-yellow-300 font-bold text-2xl mt-2">+10 coins</div>
+                        <p id="statusMessage" class="text-gray-600">Watch an ad to claim your daily reward</p>
+                        <div id="todaysReward" class="text-green-500 font-bold text-2xl mt-2">+10 coins</div>
                     </div>
                 </div>
 
@@ -165,7 +172,7 @@
                             <div class="ad-content">
                                 <!-- External ad will be loaded here -->
                                 <div id="externalAdContainer" class="ad-loading">
-                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                                     <p class="text-lg font-semibold">Loading Ad</p>
                                     <p class="text-gray-400 text-sm mt-1">Please wait...</p>
                                 </div>
@@ -185,39 +192,39 @@
 
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center mt-4">
-                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold text-white">Processing Reward</p>
-                    <p class="text-gray-300 text-sm">Please wait...</p>
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-lg font-semibold text-gray-800">Processing Reward</p>
+                    <p class="text-gray-600 text-sm">Please wait...</p>
                 </div>
 
                 <!-- Check-in Button -->
                 <button 
                     onclick="startAdForCheckin()"
                     id="checkinButton"
-                    class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none pulse-animation"
+                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none pulse-animation"
                 >
                     Watch Ad & Claim Reward
                 </button>
             </div>
 
             <!-- Streak Calendar -->
-            <div class="premium-card rounded-3xl p-6 text-white mb-6">
+            <div class="premium-card rounded-3xl p-6 text-gray-800 mb-6">
                 <h3 class="text-lg font-bold mb-4">Your Streak Calendar</h3>
                 <div class="grid grid-cols-7 gap-2 mb-4" id="streakCalendar">
                     <!-- Days will be generated here -->
                 </div>
-                <div class="text-center text-sm text-gray-300">
+                <div class="text-center text-sm text-gray-600">
                     <div class="flex items-center justify-center space-x-4 mb-2">
                         <div class="flex items-center space-x-1">
-                            <div class="w-3 h-3 bg-gray-600 rounded-full"></div>
+                            <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
                             <span>Missed</span>
                         </div>
                         <div class="flex items-center space-x-1">
-                            <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
                             <span>Today</span>
                         </div>
                         <div class="flex items-center space-x-1">
-                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-400 rounded-full"></div>
                             <span>Completed</span>
                         </div>
                     </div>
@@ -225,71 +232,71 @@
             </div>
 
             <!-- Rewards Info -->
-            <div class="premium-card rounded-3xl p-6 text-white">
+            <div class="premium-card rounded-3xl p-6 text-gray-800">
                 <h3 class="text-lg font-bold mb-4">Daily Rewards</h3>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">1</span>
+                                <span class="font-bold text-white">1</span>
                             </div>
-                            <span>Day 1</span>
+                            <span class="text-gray-800">Day 1</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">10 coins</span>
+                        <span class="text-green-500 font-bold">10 coins</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">2</span>
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-white">2</span>
                             </div>
-                            <span>Day 2</span>
+                            <span class="text-gray-800">Day 2</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">25 coins</span>
+                        <span class="text-green-500 font-bold">25 coins</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">3</span>
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-white">3</span>
                             </div>
-                            <span>Day 3</span>
+                            <span class="text-gray-800">Day 3</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">40 coins</span>
+                        <span class="text-green-500 font-bold">40 coins</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">4</span>
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-white">4</span>
                             </div>
-                            <span>Day 4</span>
+                            <span class="text-gray-800">Day 4</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">55 coins</span>
+                        <span class="text-green-500 font-bold">55 coins</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">5</span>
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-white">5</span>
                             </div>
-                            <span>Day 5</span>
+                            <span class="text-gray-800">Day 5</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">70 coins</span>
+                        <span class="text-green-500 font-bold">70 coins</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">6</span>
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-white">6</span>
                             </div>
-                            <span>Day 6</span>
+                            <span class="text-gray-800">Day 6</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">85 coins</span>
+                        <span class="text-green-500 font-bold">85 coins</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-white/10 rounded-2xl">
+                    <div class="flex justify-between items-center p-3 stats-card rounded-2xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
-                                <span class="font-bold">7</span>
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-white">7</span>
                             </div>
-                            <span>Day 7</span>
+                            <span class="text-gray-800">Day 7</span>
                         </div>
-                        <span class="text-yellow-300 font-bold">100 coins</span>
+                        <span class="text-green-500 font-bold">100 coins</span>
                     </div>
                 </div>
             </div>
@@ -297,22 +304,26 @@
     </section>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-t border-white/20">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-white/20">
         <div class="container mx-auto px-4 py-3">
-            <div class="grid grid-cols-4 gap-4">
-                <a href="dashboard.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+            <div class="grid grid-cols-5 gap-4">
+                <a href="dashboard.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-home text-xl mb-1"></i>
                     <div class="text-xs">Home</div>
                 </a>
-                <a href="watch.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+                <a href="tasks.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
+                    <i class="fas fa-tasks text-xl mb-1"></i>
+                    <div class="text-xs">Tasks</div>
+                </a>
+                <a href="watch.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-coins text-xl mb-1"></i>
                     <div class="text-xs">Earn</div>
                 </a>
-                <a href="withdraw.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+                <a href="withdraw.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-wallet text-xl mb-1"></i>
                     <div class="text-xs">Wallet</div>
                 </a>
-                <a href="profile.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+                <a href="profile.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-user text-xl mb-1"></i>
                     <div class="text-xs">Profile</div>
                 </a>
@@ -450,9 +461,9 @@
                 if (isCheckedIn) {
                     dayElement.classList.add('bg-green-500', 'text-white');
                 } else if (isToday) {
-                    dayElement.classList.add('bg-yellow-400', 'text-gray-800');
+                    dayElement.classList.add('bg-green-400', 'text-white');
                 } else {
-                    dayElement.classList.add('bg-gray-600', 'text-gray-300');
+                    dayElement.classList.add('bg-gray-200', 'text-gray-600');
                 }
 
                 dayElement.innerHTML = `
@@ -536,8 +547,8 @@
         function showFallbackAd() {
             // Fallback ad content in case external ad fails
             elements.externalAdContainer.innerHTML = `
-                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="fas fa-ad text-3xl text-yellow-400 mb-3"></i>
+                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
+                    <i class="fas fa-ad text-3xl text-white mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Daily Check-in Reward</h3>
                     <p class="text-gray-200 mb-4">Watch this ad to claim your daily reward</p>
                     <div class="text-sm text-gray-300">
@@ -676,7 +687,7 @@
             
             // Clear ad content
             elements.externalAdContainer.innerHTML = `
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                 <p class="text-lg font-semibold">Loading Ad</p>
                 <p class="text-gray-400 text-sm mt-1">Please wait...</p>
             `;
