@@ -10,11 +10,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-bg { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .premium-card { 
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .stats-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .accordion-content {
             max-height: 0;
@@ -25,18 +32,18 @@
 </head>
 <body class="gradient-bg min-h-screen pb-20">
     <!-- Header -->
-    <header class="bg-white/10 backdrop-blur-lg border-b border-white/20">
+    <header class="bg-white/90 backdrop-blur-lg border-b border-white/20">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <a href="dashboard.html" class="text-white">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-green-500 transition-colors">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     <div>
-                        <h1 class="text-xl font-bold text-white">Profile</h1>
+                        <h1 class="text-xl font-bold text-gray-800">Profile</h1>
                     </div>
                 </div>
-                <button onclick="signOut()" class="bg-white/20 text-white px-4 py-2 rounded-2xl hover:bg-white/30 transition-all duration-200">
+                <button onclick="signOut()" class="bg-green-500 text-white px-4 py-2 rounded-2xl hover:bg-green-600 transition-all duration-200">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
@@ -46,30 +53,30 @@
     <!-- Profile Info -->
     <section class="p-4">
         <div class="container mx-auto">
-            <div class="premium-card rounded-3xl p-6 text-white mb-6">
+            <div class="premium-card rounded-3xl p-6 text-gray-800 mb-6">
                 <div class="flex items-center space-x-4 mb-6">
-                    <div class="w-16 h-16 bg-yellow-400 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-user text-2xl text-gray-800"></i>
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-user text-2xl text-white"></i>
                     </div>
                     <div>
                         <h2 class="text-xl font-bold" id="profileName">Loading...</h2>
-                        <p class="text-gray-300 text-sm" id="profileEmail">Loading...</p>
+                        <p class="text-gray-600 text-sm" id="profileEmail">Loading...</p>
                     </div>
                 </div>
 
                 <!-- Referral Code -->
                 <div class="mb-4">
-                    <label class="block text-gray-300 text-sm font-semibold mb-2">Your Referral Code</label>
+                    <label class="block text-gray-600 text-sm font-semibold mb-2">Your Referral Code</label>
                     <div class="flex space-x-2">
                         <input 
                             type="text" 
                             id="referralCode"
-                            class="flex-1 bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white font-mono text-center"
+                            class="flex-1 stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 font-mono text-center"
                             readonly
                         >
                         <button 
                             onclick="copyReferralCode()"
-                            class="bg-yellow-400 text-gray-800 px-4 py-3 rounded-2xl font-semibold hover:bg-yellow-300 transition-all duration-200"
+                            class="bg-green-500 text-white px-4 py-3 rounded-2xl font-semibold hover:bg-green-600 transition-all duration-200"
                         >
                             <i class="fas fa-copy"></i>
                         </button>
@@ -82,45 +89,45 @@
     <!-- Profile Update Form -->
     <section class="p-4">
         <div class="container mx-auto">
-            <div class="premium-card rounded-3xl p-6 text-white mb-6">
+            <div class="premium-card rounded-3xl p-6 text-gray-800 mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold">Update Profile</h3>
-                    <button onclick="toggleSection('profileForm')" class="text-gray-300 hover:text-white">
+                    <button onclick="toggleSection('profileForm')" class="text-gray-500 hover:text-green-500">
                         <i class="fas fa-chevron-down" id="profileFormIcon"></i>
                     </button>
                 </div>
                 
                 <form id="profileForm" class="accordion-content">
                     <div class="mb-4">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Full Name</label>
+                        <label class="block text-gray-600 text-sm font-semibold mb-2">Full Name</label>
                         <input 
                             type="text" 
                             id="name"
-                            class="w-full bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                            class="w-full stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             placeholder="Enter your full name"
                         >
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">UPI ID</label>
+                        <label class="block text-gray-600 text-sm font-semibold mb-2">UPI ID</label>
                         <input 
                             type="text" 
                             id="upiId"
-                            class="w-full bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                            class="w-full stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             placeholder="yourname@upi"
                         >
                     </div>
                     <div class="mb-6">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">PayPal Email</label>
+                        <label class="block text-gray-600 text-sm font-semibold mb-2">PayPal Email</label>
                         <input 
                             type="email" 
                             id="paypalEmail"
-                            class="w-full bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                            class="w-full stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             placeholder="paypal@example.com"
                         >
                     </div>
                     <button 
                         type="submit"
-                        class="w-full bg-yellow-400 text-gray-800 py-4 rounded-2xl font-semibold hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105"
+                        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-semibold hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105"
                     >
                         Update Profile
                     </button>
@@ -132,47 +139,47 @@
     <!-- Change Password -->
     <section class="p-4">
         <div class="container mx-auto">
-            <div class="premium-card rounded-3xl p-6 text-white mb-6">
+            <div class="premium-card rounded-3xl p-6 text-gray-800 mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold">Change Password</h3>
-                    <button onclick="toggleSection('passwordForm')" class="text-gray-300 hover:text-white">
+                    <button onclick="toggleSection('passwordForm')" class="text-gray-500 hover:text-green-500">
                         <i class="fas fa-chevron-down" id="passwordFormIcon"></i>
                     </button>
                 </div>
                 
                 <form id="passwordForm" class="accordion-content">
                     <div class="mb-4">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Current Password</label>
+                        <label class="block text-gray-600 text-sm font-semibold mb-2">Current Password</label>
                         <input 
                             type="password" 
                             id="currentPassword"
-                            class="w-full bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                            class="w-full stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             placeholder="Enter current password"
                         >
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">New Password</label>
+                        <label class="block text-gray-600 text-sm font-semibold mb-2">New Password</label>
                         <input 
                             type="password" 
                             id="newPassword"
-                            class="w-full bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                            class="w-full stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             placeholder="Enter new password (min. 6 characters)"
                             minlength="6"
                         >
                     </div>
                     <div class="mb-6">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Confirm New Password</label>
+                        <label class="block text-gray-600 text-sm font-semibold mb-2">Confirm New Password</label>
                         <input 
                             type="password" 
                             id="confirmPassword"
-                            class="w-full bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                            class="w-full stats-card border border-gray-300 rounded-2xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             placeholder="Confirm new password"
                             minlength="6"
                         >
                     </div>
                     <button 
                         type="submit"
-                        class="w-full bg-blue-500 text-white py-4 rounded-2xl font-semibold hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
+                        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-semibold hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105"
                     >
                         Change Password
                     </button>
@@ -184,56 +191,56 @@
     <!-- FAQ Section -->
     <section class="p-4">
         <div class="container mx-auto">
-            <div class="premium-card rounded-3xl p-6 text-white">
+            <div class="premium-card rounded-3xl p-6 text-gray-800">
                 <h3 class="text-lg font-bold mb-4">FAQ & Help</h3>
                 <div class="space-y-4">
                     <!-- FAQ Item 1 -->
-                    <div class="border-b border-white/20 pb-4">
-                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center">
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center text-gray-800">
                             How do I earn coins?
                             <i class="fas fa-chevron-down transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content mt-2 text-gray-300 text-sm">
+                        <div class="accordion-content mt-2 text-gray-600 text-sm">
                             You can earn coins by watching ads (10-20 coins each), scratching cards (5-50 coins), daily check-ins (10-100 coins based on streak), opening treasure boxes (20-200 coins), and referring friends (250 coins each).
                         </div>
                     </div>
                     <!-- FAQ Item 2 -->
-                    <div class="border-b border-white/20 pb-4">
-                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center">
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center text-gray-800">
                             When can I withdraw?
                             <i class="fas fa-chevron-down transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content mt-2 text-gray-300 text-sm">
+                        <div class="accordion-content mt-2 text-gray-600 text-sm">
                             You can withdraw once you reach the minimum withdrawal amount. 10,000 coins = ₹100 (India) or 50,000 coins = $5 (International). Withdrawals are processed manually within 3-5 business days.
                         </div>
                     </div>
                     <!-- FAQ Item 3 -->
-                    <div class="border-b border-white/20 pb-4">
-                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center">
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center text-gray-800">
                             Is there a withdrawal fee?
                             <i class="fas fa-chevron-down transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content mt-2 text-gray-300 text-sm">
+                        <div class="accordion-content mt-2 text-gray-600 text-sm">
                             Yes, there's a 5% processing fee on all withdrawals. For example, if you withdraw 10,000 coins, you'll receive 9,500 coins worth after the fee deduction.
                         </div>
                     </div>
                     <!-- FAQ Item 4 -->
-                    <div class="border-b border-white/20 pb-4">
-                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center">
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center text-gray-800">
                             How do referrals work?
                             <i class="fas fa-chevron-down transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content mt-2 text-gray-300 text-sm">
+                        <div class="accordion-content mt-2 text-gray-600 text-sm">
                             Share your referral code with friends. When they sign up using your code, both you and your friend get 250 coins each (total 500 coins bonus).
                         </div>
                     </div>
                     <!-- FAQ Item 5 -->
                     <div class="pb-4">
-                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center">
+                        <button class="accordion-header w-full text-left font-semibold flex justify-between items-center text-gray-800">
                             What are the daily limits?
                             <i class="fas fa-chevron-down transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content mt-2 text-gray-300 text-sm">
+                        <div class="accordion-content mt-2 text-gray-600 text-sm">
                             Watch Ads: 50 per day • Scratch Cards: 3 per day • Daily Check-in: 1 per day • Treasure Box: 1 per day • No limits on referrals!
                         </div>
                     </div>
@@ -243,22 +250,26 @@
     </section>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-t border-white/20">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-white/20">
         <div class="container mx-auto px-4 py-3">
-            <div class="grid grid-cols-4 gap-4">
-                <a href="dashboard.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+            <div class="grid grid-cols-5 gap-4">
+                <a href="dashboard.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-home text-xl mb-1"></i>
                     <div class="text-xs">Home</div>
                 </a>
-                <a href="watch.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+                <a href="tasks.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
+                    <i class="fas fa-tasks text-xl mb-1"></i>
+                    <div class="text-xs">Tasks</div>
+                </a>
+                <a href="watch.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-coins text-xl mb-1"></i>
                     <div class="text-xs">Earn</div>
                 </a>
-                <a href="withdraw.html" class="text-center text-white hover:text-yellow-400 transition-colors">
+                <a href="withdraw.html" class="text-center text-gray-600 hover:text-green-500 transition-colors">
                     <i class="fas fa-wallet text-xl mb-1"></i>
                     <div class="text-xs">Wallet</div>
                 </a>
-                <a href="profile.html" class="text-center text-yellow-400">
+                <a href="profile.html" class="text-center text-green-500">
                     <i class="fas fa-user text-xl mb-1"></i>
                     <div class="text-xs font-semibold">Profile</div>
                 </a>
