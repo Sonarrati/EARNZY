@@ -9,7 +9,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-bg { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
     </style>
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
@@ -17,8 +17,8 @@
         <!-- Logo -->
         <div class="text-center mb-8">
             <div class="flex items-center justify-center space-x-3 mb-4">
-                <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center">
-                    <i class="fas fa-coins text-2xl text-gray-800"></i>
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-coins text-2xl text-white"></i>
                 </div>
                 <span class="text-3xl font-bold text-white">Earnzy</span>
             </div>
@@ -37,7 +37,7 @@
                         <input 
                             id="name"
                             type="text" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                             placeholder="Enter your full name"
                             required
                         >
@@ -53,7 +53,7 @@
                         <input 
                             id="email"
                             type="email" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                             placeholder="Enter your email"
                             required
                         >
@@ -69,7 +69,7 @@
                         <input 
                             id="password"
                             type="password" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                             placeholder="Create a password (min. 6 characters)"
                             minlength="6"
                             required
@@ -86,7 +86,7 @@
                         <input 
                             id="referralCode"
                             type="text" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                             placeholder="Enter referral code if any"
                         >
                         <i class="fas fa-user-friends absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
@@ -95,7 +95,7 @@
 
                 <button 
                     type="submit"
-                    class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-2xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg mb-4"
+                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-semibold hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105 shadow-lg mb-4"
                 >
                     Create Account
                 </button>
@@ -104,7 +104,7 @@
             <div class="text-center">
                 <p class="text-gray-600">
                     Already have an account? 
-                    <a href="login.html" class="text-purple-600 font-semibold hover:text-purple-700 transition-colors duration-200">
+                    <a href="login.html" class="text-green-600 font-semibold hover:text-green-700 transition-colors duration-200">
                         Sign in here
                     </a>
                 </p>
@@ -113,7 +113,7 @@
             <!-- Loading Spinner -->
             <div id="loading" class="hidden text-center py-4">
                 <div class="inline-flex items-center">
-                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
                     <span class="ml-2 text-gray-600">Creating account...</span>
                 </div>
             </div>
