@@ -17,14 +17,8 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        .stats-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
         #adDisplay {
-            min-height: 450px;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,16 +159,29 @@
             justify-content: center;
             overflow: visible;
         }
-        .responsive-ad-iframe {
+        .success-message {
+            text-align: center;
+            padding: 2rem;
             width: 100%;
             height: 100%;
-            border: none;
-            border-radius: 12px;
-            overflow: visible;
-        }
-        .ad-success {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 2px solid #10b981;
+            border-radius: 12px;
+        }
+        .coins-earned {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #10b981;
+            margin: 1rem 0;
+            text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -208,21 +215,7 @@
                     <i class="fas fa-play-circle text-3xl text-white"></i>
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Watch & Earn</h2>
-                <p class="text-gray-600 mb-4">Watch short ads and earn coins instantly</p>
-                <div class="stats-card rounded-2xl p-4 mb-6">
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Coins per ad:</span>
-                        <span class="text-green-500 font-semibold">10-20 coins</span>
-                    </div>
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Daily limit:</span>
-                        <span class="text-gray-800">20 ads</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Watched today:</span>
-                        <span id="watchedToday" class="text-green-500 font-semibold">0/20</span>
-                    </div>
-                </div>
+                <p class="text-gray-600 mb-6">Watch short ads and earn coins instantly</p>
 
                 <!-- Ad Display Area -->
                 <div id="adDisplay" class="rounded-2xl overflow-visible">
@@ -261,6 +254,25 @@
                             <p class="ad-instructions-text">Stay on this screen to earn coins</p>
                         </div>
                     </div>
+
+                    <!-- Success State - Hidden by default -->
+                    <div id="successState" class="hidden w-full h-full">
+                        <div class="success-message">
+                            <i class="fas fa-check-circle success-icon"></i>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Congratulations!</h3>
+                            <p class="text-gray-600 mb-2">You successfully watched the ad</p>
+                            <p class="text-gray-600 mb-4">You earned</p>
+                            <div class="coins-earned" id="earnedCoins">0</div>
+                            <p class="text-gray-600">coins</p>
+                            <button 
+                                onclick="startAd()"
+                                class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-8 rounded-2xl font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                            >
+                                <i class="fas fa-redo mr-2"></i>
+                                Watch Another Ad
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Watch Button -->
@@ -278,23 +290,6 @@
                     <div class="animate-spin rounded-full h-16 w-16 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                     <p class="text-lg font-semibold text-gray-800">Loading Ad</p>
                     <p class="text-gray-600 text-sm">Please wait...</p>
-                </div>
-
-                <!-- Result State -->
-                <div id="resultState" class="hidden text-center mt-4">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                        <i class="fas fa-check text-2xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Congratulations!</h3>
-                    <p class="text-gray-600 mb-2">You successfully watched the ad</p>
-                    <p class="text-gray-600 mb-4">You earned <span id="earnedCoins" class="text-green-500 font-bold text-xl">0</span> coins</p>
-                    <button 
-                        onclick="startAd()"
-                        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105 shadow-lg"
-                    >
-                        <i class="fas fa-redo mr-2"></i>
-                        Watch Another Ad
-                    </button>
                 </div>
             </div>
 
@@ -375,13 +370,12 @@
         const elements = {
             initialAdState: document.getElementById('initialAdState'),
             activeAdState: document.getElementById('activeAdState'),
+            successState: document.getElementById('successState'),
             loadingState: document.getElementById('loadingState'),
-            resultState: document.getElementById('resultState'),
             watchButton: document.getElementById('watchButton'),
             externalAdContainer: document.getElementById('externalAdContainer'),
             countdown: document.getElementById('countdown'),
             todayEarnings: document.getElementById('todayEarnings'),
-            watchedToday: document.getElementById('watchedToday'),
             earnedCoins: document.getElementById('earnedCoins'),
             recentEarnings: document.getElementById('recentEarnings'),
             notification: document.getElementById('notification')
@@ -428,7 +422,6 @@
                 const watchedToday = todayEarnings.length;
 
                 elements.todayEarnings.textContent = totalToday;
-                elements.watchedToday.textContent = `${watchedToday}/20`;
 
                 // Disable button if limit reached
                 if (watchedToday >= 20) {
@@ -486,6 +479,7 @@
 
                 // Hide initial state and show loading
                 elements.initialAdState.classList.add('hidden');
+                elements.successState.classList.add('hidden');
                 elements.loadingState.classList.remove('hidden');
                 elements.watchButton.disabled = true;
 
@@ -541,17 +535,6 @@
                 iframe.style.overflow = 'visible';
                 iframe.onload = () => {
                     console.log('External ad loaded successfully');
-                    // Try to adjust iframe content after load
-                    setTimeout(() => {
-                        try {
-                            // This might not work due to cross-origin restrictions
-                            // but we try to set the iframe dimensions to fit content
-                            iframe.style.height = 'auto';
-                            iframe.style.minHeight = '400px';
-                        } catch(e) {
-                            console.log('Cannot adjust iframe due to security restrictions');
-                        }
-                    }, 500);
                 };
                 iframe.onerror = () => {
                     console.error('Failed to load external ad');
@@ -607,16 +590,17 @@
             try {
                 console.log('Processing ad completion...');
                 
-                // Hide ad and show loading
-                elements.activeAdState.classList.add('hidden');
-                elements.loadingState.classList.remove('hidden');
-
-                // Process ad reward
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) throw new Error('Not authenticated');
-
                 // Generate random coins between 10-20
                 const coins = Math.floor(Math.random() * 11) + 10;
+
+                // Show success message directly in the ad display
+                elements.activeAdState.classList.add('hidden');
+                elements.successState.classList.remove('hidden');
+                elements.earnedCoins.textContent = coins;
+
+                // Process ad reward in background
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
 
                 // Update coins in database
                 const { data: userData, error: userError } = await supabase
@@ -648,11 +632,6 @@
 
                 if (earningError) throw earningError;
 
-                // Show result
-                elements.loadingState.classList.add('hidden');
-                elements.resultState.classList.remove('hidden');
-                elements.earnedCoins.textContent = coins;
-
                 // Reload data
                 await loadTodayEarnings();
                 await loadRecentEarnings();
@@ -661,7 +640,6 @@
 
             } catch (error) {
                 console.error('Process ad completion error:', error);
-                elements.loadingState.classList.add('hidden');
                 resetAd();
                 showNotification(error.message || 'Failed to process ad', 'error');
             }
@@ -677,7 +655,7 @@
             }
 
             // Reset all states to initial
-            elements.resultState.classList.add('hidden');
+            elements.successState.classList.add('hidden');
             elements.activeAdState.classList.add('hidden');
             elements.loadingState.classList.add('hidden');
             elements.initialAdState.classList.remove('hidden');
