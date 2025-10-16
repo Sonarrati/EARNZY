@@ -111,6 +111,11 @@
             flex-direction: column;
             color: white;
         }
+        .ad-banner {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -174,7 +179,7 @@
                     <div id="activeAdState" class="hidden w-full h-full">
                         <div class="ad-container">
                             <div class="ad-content">
-                                <!-- External ad will be loaded here -->
+                                <!-- New ad content will be loaded here -->
                                 <div id="externalAdContainer" class="ad-loading">
                                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                                     <p class="text-lg font-semibold">Loading Ad</p>
@@ -227,6 +232,20 @@
                         Watch Another Ad
                     </button>
                 </div>
+            </div>
+
+            <!-- Banner Ad -->
+            <div class="ad-banner">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '29bb5cc2045e980a1c678b671b5c009d',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/29bb5cc2045e980a1c678b671b5c009d/invoke.js"></script>
             </div>
 
             <!-- Recent Earnings -->
@@ -305,8 +324,8 @@
             notification: document.getElementById('notification')
         };
 
-        // Updated ad URL
-        const AD_URL = "https://esteemedfinance.com/dUm.F_z/dNGcNPvBZMGWUr/MeemX9du/ZoUGljkOPHTUYu2kNbzMU/4tMnjbEWt-N/jiY/3ENWT-gKytMSgc";
+        // New ad URL
+        const AD_URL = "https://www.effectivegatecpm.com/jrcgp8tspv?key=cfdc048f1be37ad89069182de20d8c63";
 
         async function loadWatchPage() {
             try {
