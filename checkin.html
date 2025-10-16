@@ -31,15 +31,22 @@
             transform: scale(1.1);
         }
         #adDisplay {
-            min-height: 280px;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: #f8fafc;
             border-radius: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+            margin-bottom: 20px;
+            width: 100%;
+            height: auto;
+            transition: min-height 0.3s ease;
+        }
+        #adDisplay.expanded {
+            min-height: 600px;
         }
         .countdown-timer {
             font-size: 3rem;
@@ -118,6 +125,69 @@
             flex-direction: column;
             color: white;
         }
+        .timer-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            border: 2px solid #10b981;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .ad-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .ad-header-text {
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .ad-instructions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 15px;
+            text-align: center;
+            z-index: 25;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .ad-instructions-text {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        .full-ad-container {
+            width: 100%;
+            height: auto;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+        .ad-banner-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -166,6 +236,14 @@
 
                 <!-- Ad Display Area (Hidden by default) -->
                 <div id="adDisplay" class="rounded-2xl mb-4 overflow-hidden hidden">
+                    <div class="ad-header">
+                        <span class="ad-header-text">Advertisement - Please watch the full ad</span>
+                    </div>
+                    
+                    <div class="timer-container">
+                        <div class="countdown-timer" id="countdown">15</div>
+                    </div>
+                    
                     <!-- Active Ad State -->
                     <div id="activeAdState" class="w-full h-full">
                         <div class="ad-container">
@@ -180,13 +258,8 @@
                         </div>
                     </div>
                     
-                    <!-- Countdown Overlay -->
-                    <div id="countdownState" class="ad-overlay">
-                        <div class="text-center">
-                            <div class="countdown-timer mb-4" id="countdown">15</div>
-                            <p class="text-white text-lg font-semibold">Please watch the ad</p>
-                            <p class="text-gray-400 mt-2">Stay on this screen to claim your reward</p>
-                        </div>
+                    <div class="ad-instructions">
+                        <p class="ad-instructions-text">Stay on this screen to claim your reward</p>
                     </div>
                 </div>
 
@@ -229,6 +302,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Banner Ad -->
+            <div class="ad-banner-container">
+                <script async="async" data-cfasync="false" src="//pl27860279.effectivegatecpm.com/dd4391f2e04e2ed551c765a835c4382c/invoke.js"></script>
+                <div id="container-dd4391f2e04e2ed551c765a835c4382c"></div>
             </div>
 
             <!-- Rewards Info -->
@@ -345,15 +424,11 @@
         let userData = null;
         let countdownInterval = null;
 
-        // Ad URL for daily check-in
-        const DAILY_CHECKIN_AD_URL = "https://esteemedfinance.com/bs3YV.0bPz3fpmv-bamnV/JqZDDM0u2mNBj/cF1DONTqA/5ULHTsYC2XN/zHUs5rMhT/AA";
-
         // DOM elements
         const elements = {
             checkinStatus: document.getElementById('checkinStatus'),
             adDisplay: document.getElementById('adDisplay'),
             activeAdState: document.getElementById('activeAdState'),
-            countdownState: document.getElementById('countdownState'),
             loadingState: document.getElementById('loadingState'),
             checkinButton: document.getElementById('checkinButton'),
             externalAdContainer: document.getElementById('externalAdContainer'),
@@ -479,6 +554,9 @@
             try {
                 console.log('Starting ad for daily check-in...');
                 
+                // Expand the ad display
+                elements.adDisplay.classList.add('expanded');
+
                 // Hide check-in status and show ad
                 elements.checkinStatus.classList.add('hidden');
                 elements.adDisplay.classList.remove('hidden');
@@ -501,8 +579,8 @@
             try {
                 console.log('Showing ad for check-in...');
                 
-                // Load external ad
-                loadExternalAd();
+                // Load popunder ad
+                loadPopunderAd();
 
                 // Start countdown
                 startCountdown();
@@ -514,43 +592,42 @@
             }
         }
 
-        function loadExternalAd() {
+        function loadPopunderAd() {
             try {
-                console.log('Loading external ad from:', DAILY_CHECKIN_AD_URL);
+                console.log('Loading popunder ad...');
                 
-                // Create iframe for external ad
-                const iframe = document.createElement('iframe');
-                iframe.id = 'adIframe';
-                iframe.src = DAILY_CHECKIN_AD_URL;
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.border = 'none';
-                iframe.style.borderRadius = '12px';
-                iframe.onload = () => {
-                    console.log('External ad loaded successfully');
-                };
-                iframe.onerror = () => {
-                    console.error('Failed to load external ad');
-                    showFallbackAd();
-                };
+                // Create and load the popunder ad script
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = '//pl27796166.effectivegatecpm.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js';
+                document.head.appendChild(script);
+                
+                // Show ad content in the container
+                elements.externalAdContainer.innerHTML = `
+                    <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
+                        <i class="fas fa-ad text-3xl text-white mb-3"></i>
+                        <h3 class="text-lg font-semibold mb-2">Daily Check-in Reward</h3>
+                        <p class="text-gray-200 mb-4">Watch this ad to claim your daily reward</p>
+                        <div class="text-sm text-gray-300">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Advertisement - Watch full ad to claim reward
+                        </div>
+                    </div>
+                `;
 
-                // Clear existing content and add iframe
-                elements.externalAdContainer.innerHTML = '';
-                elements.externalAdContainer.appendChild(iframe);
-                
             } catch (error) {
-                console.error('Error loading external ad:', error);
+                console.error('Error loading popunder ad:', error);
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
-            // Fallback ad content in case external ad fails
+            // Fallback ad content in case popunder fails
             elements.externalAdContainer.innerHTML = `
                 <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
                     <i class="fas fa-ad text-3xl text-white mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Daily Check-in Reward</h3>
-                    <p class="text-gray-200 mb-4">Watch this ad to claim your daily reward</p>
+                    <p class="text-gray-200 mb-4">Thank you for watching this advertisement</p>
                     <div class="text-sm text-gray-300">
                         <i class="fas fa-info-circle mr-1"></i>
                         Advertisement - Watch full ad to claim reward
@@ -682,6 +759,7 @@
 
             // Reset to initial state
             elements.adDisplay.classList.add('hidden');
+            elements.adDisplay.classList.remove('expanded');
             elements.loadingState.classList.add('hidden');
             elements.checkinStatus.classList.remove('hidden');
             
