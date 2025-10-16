@@ -188,6 +188,19 @@
             width: 100%;
             margin: 10px 0;
         }
+        .native-ad-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .popunder-ad-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+            background: white;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -248,7 +261,7 @@
                     <div id="activeAdState" class="w-full h-full">
                         <div class="ad-container">
                             <div class="ad-content">
-                                <!-- External ad will be loaded here -->
+                                <!-- Popunder Ad will be loaded here -->
                                 <div id="externalAdContainer" class="ad-loading">
                                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                                     <p class="text-lg font-semibold">Loading Ad</p>
@@ -280,6 +293,12 @@
                 </button>
             </div>
 
+            <!-- Native Banner Ad -->
+            <div class="native-ad-container">
+                <script async="async" data-cfasync="false" src="//pl27860279.effectivegatecpm.com/dd4391f2e04e2ed551c765a835c4382c/invoke.js"></script>
+                <div id="container-dd4391f2e04e2ed551c765a835c4382c"></div>
+            </div>
+
             <!-- Streak Calendar -->
             <div class="premium-card rounded-3xl p-6 text-gray-800 mb-6">
                 <h3 class="text-lg font-bold mb-4">Your Streak Calendar</h3>
@@ -302,12 +321,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Banner Ad -->
-            <div class="ad-banner-container">
-                <script async="async" data-cfasync="false" src="//pl27860279.effectivegatecpm.com/dd4391f2e04e2ed551c765a835c4382c/invoke.js"></script>
-                <div id="container-dd4391f2e04e2ed551c765a835c4382c"></div>
             </div>
 
             <!-- Rewards Info -->
@@ -579,7 +592,7 @@
             try {
                 console.log('Showing ad for check-in...');
                 
-                // Load popunder ad
+                // Load popunder ad directly in the container
                 loadPopunderAd();
 
                 // Start countdown
@@ -594,26 +607,120 @@
 
         function loadPopunderAd() {
             try {
-                console.log('Loading popunder ad...');
+                console.log('Loading popunder ad directly in container...');
                 
-                // Create and load the popunder ad script
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = '//pl27796166.effectivegatecpm.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js';
-                document.head.appendChild(script);
+                // Clear existing content
+                elements.externalAdContainer.innerHTML = '';
                 
-                // Show ad content in the container
-                elements.externalAdContainer.innerHTML = `
-                    <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
-                        <i class="fas fa-ad text-3xl text-white mb-3"></i>
-                        <h3 class="text-lg font-semibold mb-2">Daily Check-in Reward</h3>
-                        <p class="text-gray-200 mb-4">Watch this ad to claim your daily reward</p>
-                        <div class="text-sm text-gray-300">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Advertisement - Watch full ad to claim reward
+                // Create iframe to display the popunder ad content
+                const iframe = document.createElement('iframe');
+                iframe.id = 'popunderAdFrame';
+                iframe.className = 'popunder-ad-frame';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '12px';
+                iframe.style.background = 'white';
+                
+                // Create a simple ad content since we can't directly load the popunder script in iframe
+                const adContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Advertisement</title>
+                        <style>
+                            body {
+                                margin: 0;
+                                padding: 20px;
+                                font-family: Arial, sans-serif;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                color: white;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                height: 100vh;
+                                text-align: center;
+                            }
+                            .ad-content {
+                                max-width: 400px;
+                            }
+                            .ad-title {
+                                font-size: 24px;
+                                font-weight: bold;
+                                margin-bottom: 15px;
+                            }
+                            .ad-description {
+                                font-size: 16px;
+                                margin-bottom: 20px;
+                                line-height: 1.5;
+                            }
+                            .ad-cta {
+                                background: #ff6b6b;
+                                color: white;
+                                border: none;
+                                padding: 12px 24px;
+                                border-radius: 25px;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            }
+                            .ad-cta:hover {
+                                background: #ff5252;
+                                transform: scale(1.05);
+                            }
+                            .ad-logo {
+                                font-size: 48px;
+                                margin-bottom: 20px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="ad-content">
+                            <div class="ad-logo">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <div class="ad-title">Special Offer</div>
+                            <div class="ad-description">
+                                Thank you for watching this advertisement. This helps support our app and allows us to provide you with free rewards.
+                            </div>
+                            <button class="ad-cta" onclick="window.parent.postMessage('adCompleted', '*')">
+                                Continue to Reward
+                            </button>
+                            <div style="margin-top: 20px; font-size: 12px; opacity: 0.8;">
+                                Advertisement - Please watch for 15 seconds
+                            </div>
                         </div>
-                    </div>
+                        
+                        <script>
+                            // Also load the actual popunder script
+                            const script = document.createElement('script');
+                            script.type = 'text/javascript';
+                            script.src = '//pl27796166.effectivegatecpm.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js';
+                            document.head.appendChild(script);
+                            
+                            // Listen for the button click to complete the ad
+                            document.querySelector('.ad-cta').addEventListener('click', function() {
+                                window.parent.postMessage('adCompleted', '*');
+                            });
+                        <\/script>
+                    </body>
+                    </html>
                 `;
+                
+                iframe.srcdoc = adContent;
+                
+                // Listen for messages from the iframe
+                window.addEventListener('message', function(event) {
+                    if (event.data === 'adCompleted') {
+                        // If ad is completed via button click, process check-in
+                        processCheckinAfterAd();
+                    }
+                });
+                
+                // Add iframe to container
+                elements.externalAdContainer.appendChild(iframe);
 
             } catch (error) {
                 console.error('Error loading popunder ad:', error);
