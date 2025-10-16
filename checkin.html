@@ -31,7 +31,7 @@
             transform: scale(1.1);
         }
         #adDisplay {
-            min-height: 300px;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,7 +98,7 @@
         .ad-content {
             width: 100%;
             height: 100%;
-            min-height: 250px;
+            min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -216,6 +216,73 @@
             align-items: center;
             justify-content: center;
         }
+        .new-ad-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .new-ad-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #fbbf24;
+        }
+        .new-ad-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .new-ad-description {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            max-width: 500px;
+        }
+        .new-ad-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            max-width: 600px;
+        }
+        .new-ad-feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .new-ad-cta {
+            background: #fbbf24;
+            color: #1e3a8a;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .new-ad-cta:hover {
+            background: #f59e0b;
+            transform: scale(1.05);
+        }
+        .new-ad-footer {
+            margin-top: 20px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -276,7 +343,7 @@
                     <div id="activeAdState" class="w-full h-full">
                         <div class="ad-container">
                             <div class="ad-content">
-                                <!-- Popunder Ad will be loaded here -->
+                                <!-- New Ad will be loaded here -->
                                 <div id="externalAdContainer" class="ad-loading">
                                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                                     <p class="text-lg font-semibold">Loading Ad</p>
@@ -607,8 +674,8 @@
             try {
                 console.log('Showing ad for check-in...');
                 
-                // Load popunder ad directly in the container
-                loadPopunderAd();
+                // Load new ad directly in the container
+                loadNewAd();
 
                 // Start countdown
                 startCountdown();
@@ -620,161 +687,72 @@
             }
         }
 
-        function loadPopunderAd() {
+        function loadNewAd() {
             try {
-                console.log('Loading popunder ad directly in container...');
+                console.log('Loading new ad in container...');
                 
                 // Clear existing content
                 elements.externalAdContainer.innerHTML = '';
                 
-                // Create iframe to display the popunder ad content
-                const iframe = document.createElement('iframe');
-                iframe.id = 'popunderAdFrame';
-                iframe.className = 'popunder-ad-frame';
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.border = 'none';
-                iframe.style.borderRadius = '12px';
-                iframe.style.background = 'white';
+                // Create a new ad container with enhanced design
+                const newAdContainer = document.createElement('div');
+                newAdContainer.className = 'new-ad-container';
                 
-                // Create a simple ad content since we can't directly load the popunder script in iframe
-                const adContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Advertisement</title>
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <style>
-                            * {
-                                margin: 0;
-                                padding: 0;
-                                box-sizing: border-box;
-                            }
-                            body {
-                                margin: 0;
-                                padding: 20px;
-                                font-family: Arial, sans-serif;
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                color: white;
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                justify-content: center;
-                                min-height: 100vh;
-                                text-align: center;
-                                overflow: hidden;
-                            }
-                            .ad-content {
-                                max-width: 400px;
-                                width: 100%;
-                            }
-                            .ad-title {
-                                font-size: 24px;
-                                font-weight: bold;
-                                margin-bottom: 15px;
-                            }
-                            .ad-description {
-                                font-size: 16px;
-                                margin-bottom: 20px;
-                                line-height: 1.5;
-                            }
-                            .ad-cta {
-                                background: #ff6b6b;
-                                color: white;
-                                border: none;
-                                padding: 12px 24px;
-                                border-radius: 25px;
-                                font-size: 16px;
-                                font-weight: bold;
-                                cursor: pointer;
-                                transition: all 0.3s ease;
-                                margin-top: 10px;
-                            }
-                            .ad-cta:hover {
-                                background: #ff5252;
-                                transform: scale(1.05);
-                            }
-                            .ad-logo {
-                                font-size: 48px;
-                                margin-bottom: 20px;
-                            }
-                            .ad-image {
-                                width: 100%;
-                                max-width: 300px;
-                                height: auto;
-                                border-radius: 10px;
-                                margin: 15px 0;
-                            }
-                            .ad-footer {
-                                margin-top: 20px;
-                                font-size: 12px;
-                                opacity: 0.8;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="ad-content">
-                            <div class="ad-logo">
-                                <i class="fas fa-ad"></i>
-                            </div>
-                            <div class="ad-title">Special Offer</div>
-                            <div class="ad-description">
-                                Thank you for watching this advertisement. This helps support our app and allows us to provide you with free rewards.
-                            </div>
-                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 15px 0;">
-                                <h3 style="margin-bottom: 10px;">Limited Time Offer</h3>
-                                <p style="font-size: 14px;">Get 50% off on our premium subscription when you sign up today!</p>
-                            </div>
-                            <button class="ad-cta" onclick="window.parent.postMessage('adCompleted', '*')">
-                                Continue to Reward
-                            </button>
-                            <div class="ad-footer">
-                                Advertisement - Please watch for 15 seconds
-                            </div>
+                newAdContainer.innerHTML = `
+                    <div class="new-ad-logo">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="new-ad-title">Premium Financial Services</div>
+                    <div class="new-ad-description">
+                        Join over 1 million users who have transformed their financial future with our premium investment platform. Get access to exclusive tools and insights.
+                    </div>
+                    <div class="new-ad-features">
+                        <div class="new-ad-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>High Returns</span>
                         </div>
-                        
-                        <script>
-                            // Also load the actual popunder script
-                            const script = document.createElement('script');
-                            script.type = 'text/javascript';
-                            script.src = '//pl27796166.effectivegatecpm.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js';
-                            document.head.appendChild(script);
-                            
-                            // Listen for the button click to complete the ad
-                            document.querySelector('.ad-cta').addEventListener('click', function() {
-                                window.parent.postMessage('adCompleted', '*');
-                            });
-                            
-                            // Auto-complete after 15 seconds if user doesn't click
-                            setTimeout(function() {
-                                window.parent.postMessage('adCompleted', '*');
-                            }, 15000);
-                        <\/script>
-                    </body>
-                    </html>
+                        <div class="new-ad-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Platform</span>
+                        </div>
+                        <div class="new-ad-feature">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Expert Analysis</span>
+                        </div>
+                        <div class="new-ad-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>24/7 Support</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 20px; width: 100%; max-width: 500px; height: 200px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #1e3a8a; font-weight: bold; font-size: 18px;">
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 10px;"></i>
+                            <div>Average Returns: 12.5% annually</div>
+                        </div>
+                    </div>
+                    <button class="new-ad-cta" id="adCtaButton">
+                        <i class="fas fa-rocket mr-2"></i> Get Started Now
+                    </button>
+                    <div class="new-ad-footer">
+                        Advertisement - Please watch for 15 seconds
+                    </div>
                 `;
                 
-                iframe.srcdoc = adContent;
+                elements.externalAdContainer.appendChild(newAdContainer);
                 
-                // Listen for messages from the iframe
-                window.addEventListener('message', function(event) {
-                    if (event.data === 'adCompleted') {
-                        // If ad is completed via button click, process check-in
-                        processCheckinAfterAd();
-                    }
+                // Add event listener to the CTA button
+                document.getElementById('adCtaButton').addEventListener('click', function() {
+                    processCheckinAfterAd();
                 });
-                
-                // Add iframe to container
-                elements.externalAdContainer.appendChild(iframe);
 
             } catch (error) {
-                console.error('Error loading popunder ad:', error);
+                console.error('Error loading new ad:', error);
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
-            // Fallback ad content in case popunder fails
+            // Fallback ad content in case new ad fails
             elements.externalAdContainer.innerHTML = `
                 <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
                     <i class="fas fa-ad text-3xl text-white mb-3"></i>
