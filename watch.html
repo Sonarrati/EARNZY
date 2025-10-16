@@ -24,7 +24,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         #adDisplay {
-            min-height: 400px;
+            min-height: 450px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -32,7 +32,7 @@
             border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             margin-bottom: 20px;
         }
         .countdown-timer {
@@ -82,13 +82,13 @@
         .ad-content {
             width: 100%;
             height: 100%;
-            min-height: 380px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 12px;
             z-index: 10;
             position: relative;
+            overflow: visible;
         }
         .hidden {
             display: none !important;
@@ -103,6 +103,7 @@
             border-radius: 12px;
             z-index: 15;
             position: relative;
+            overflow: visible;
         }
         .ad-loading {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -124,6 +125,7 @@
             height: 100%;
             position: relative;
             z-index: 10;
+            overflow: visible;
         }
         .ad-frame {
             width: 100%;
@@ -153,7 +155,7 @@
             left: 0;
             right: 0;
             background: rgba(15, 23, 42, 0.9);
-            padding: 10px 15px;
+            padding: 12px 15px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -171,7 +173,7 @@
             left: 0;
             right: 0;
             background: rgba(15, 23, 42, 0.9);
-            padding: 10px 15px;
+            padding: 12px 15px;
             text-align: center;
             z-index: 25;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -179,6 +181,21 @@
         .ad-instructions-text {
             color: #d1d5db;
             font-size: 0.85rem;
+        }
+        .full-ad-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+        .responsive-ad-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+            overflow: visible;
         }
     </style>
 </head>
@@ -229,7 +246,7 @@
                 </div>
 
                 <!-- Ad Display Area -->
-                <div id="adDisplay" class="rounded-2xl overflow-hidden">
+                <div id="adDisplay" class="rounded-2xl overflow-visible">
                     <!-- Initial State - Visible by default -->
                     <div id="initialAdState" class="text-center w-full h-full flex items-center justify-center">
                         <div class="ad-placeholder">
@@ -250,11 +267,13 @@
                         </div>
                         
                         <div class="ad-content">
-                            <div id="externalAdContainer" class="ad-frame-container">
-                                <div class="ad-loading">
-                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
-                                    <p class="text-lg font-semibold">Loading Ad</p>
-                                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+                            <div class="full-ad-container">
+                                <div id="externalAdContainer" class="ad-frame-container">
+                                    <div class="ad-loading">
+                                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                                        <p class="text-lg font-semibold">Loading Ad</p>
+                                        <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -540,8 +559,20 @@
                 iframe.style.borderRadius = '12px';
                 iframe.style.position = 'relative';
                 iframe.style.zIndex = '15';
+                iframe.style.overflow = 'visible';
                 iframe.onload = () => {
                     console.log('External ad loaded successfully');
+                    // Try to adjust iframe content after load
+                    setTimeout(() => {
+                        try {
+                            // This might not work due to cross-origin restrictions
+                            // but we try to set the iframe dimensions to fit content
+                            iframe.style.height = 'auto';
+                            iframe.style.minHeight = '400px';
+                        } catch(e) {
+                            console.log('Cannot adjust iframe due to security restrictions');
+                        }
+                    }, 500);
                 };
                 iframe.onerror = () => {
                     console.error('Failed to load external ad');
@@ -561,7 +592,7 @@
         function showFallbackAd() {
             // Fallback ad content in case external ad fails
             elements.externalAdContainer.innerHTML = `
-                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); z-index: 15; position: relative;">
+                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); z-index: 15; position: relative; overflow: visible;">
                     <i class="fas fa-ad text-3xl text-white mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Special Offer</h3>
                     <p class="text-gray-200 mb-4">Thank you for watching this advertisement</p>
