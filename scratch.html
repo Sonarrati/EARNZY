@@ -33,6 +33,199 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+        #adDisplay {
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            width: 100%;
+            transition: min-height 0.5s ease;
+        }
+        #adDisplay.expanded {
+            min-height: 600px;
+        }
+        .countdown-timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #10b981;
+            text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+        .ad-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            border-radius: 16px;
+            position: relative;
+        }
+        .ad-content {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #externalAdContainer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+        .ad-loading {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
+        .timer-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            border: 2px solid #10b981;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .ad-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .ad-header-text {
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .ad-instructions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 15px;
+            text-align: center;
+            z-index: 25;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .ad-instructions-text {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        .new-ad-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .new-ad-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #fbbf24;
+        }
+        .new-ad-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .new-ad-description {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            max-width: 500px;
+        }
+        .new-ad-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            max-width: 600px;
+        }
+        .new-ad-feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .new-ad-cta {
+            background: #fbbf24;
+            color: #1e3a8a;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .new-ad-cta:hover {
+            background: #f59e0b;
+            transform: scale(1.05);
+        }
+        .new-ad-footer {
+            margin-top: 20px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .banner-ad-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .banner-ad-placeholder {
+            width: 300px;
+            height: 250px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -82,9 +275,49 @@
                     </div>
                 </div>
 
+                <!-- Ad Display Area (Hidden by default) -->
+                <div id="adDisplay" class="rounded-2xl mb-4 overflow-hidden hidden">
+                    <div class="ad-header">
+                        <span class="ad-header-text">Advertisement - Please watch the full ad</span>
+                    </div>
+                    
+                    <div class="timer-container">
+                        <div class="countdown-timer" id="countdown">15</div>
+                    </div>
+                    
+                    <!-- Active Ad State -->
+                    <div id="activeAdState" class="w-full h-full">
+                        <div class="ad-container">
+                            <div class="ad-content">
+                                <!-- New Ad will be loaded here -->
+                                <div id="externalAdContainer" class="ad-loading">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                                    <p class="text-lg font-semibold">Loading Ad</p>
+                                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-instructions">
+                        <p class="ad-instructions-text">Stay on this screen to claim your reward</p>
+                    </div>
+                </div>
+
                 <!-- Cards Grid -->
                 <div class="grid grid-cols-3 gap-4 mb-6" id="cardsGrid">
                     <!-- Cards will be generated here -->
+                </div>
+
+                <!-- Banner Ad -->
+                <div class="banner-ad-container">
+                    <div class="banner-ad-placeholder">
+                        <div>
+                            <i class="fas fa-ad text-2xl mb-2"></i>
+                            <p>Advertisement</p>
+                            <p class="text-sm mt-2">300x250 Banner</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Result Display -->
@@ -161,6 +394,23 @@
         let currentUser = null;
         let todayEarnings = [];
         let availableCards = 3;
+        let countdownInterval = null;
+        let currentCardIndex = null;
+
+        // DOM elements
+        const elements = {
+            adDisplay: document.getElementById('adDisplay'),
+            externalAdContainer: document.getElementById('externalAdContainer'),
+            countdown: document.getElementById('countdown'),
+            cardsGrid: document.getElementById('cardsGrid'),
+            todayEarnings: document.getElementById('todayEarnings'),
+            scratchedToday: document.getElementById('scratchedToday'),
+            resultDisplay: document.getElementById('resultDisplay'),
+            wonCoins: document.getElementById('wonCoins'),
+            resetButton: document.getElementById('resetButton'),
+            recentWinnings: document.getElementById('recentWinnings'),
+            notification: document.getElementById('notification')
+        };
 
         async function loadScratchPage() {
             try {
@@ -201,8 +451,8 @@
                 const scratchedToday = todayEarnings.length;
                 availableCards = 3 - scratchedToday;
 
-                document.getElementById('todayEarnings').textContent = totalToday;
-                document.getElementById('scratchedToday').textContent = `${scratchedToday}/3`;
+                elements.todayEarnings.textContent = totalToday;
+                elements.scratchedToday.textContent = `${scratchedToday}/3`;
 
             } catch (error) {
                 console.error('Error loading today earnings:', error);
@@ -221,10 +471,8 @@
 
                 if (error) throw error;
 
-                const container = document.getElementById('recentWinnings');
-                
                 if (data && data.length > 0) {
-                    container.innerHTML = data.map(earning => `
+                    elements.recentWinnings.innerHTML = data.map(earning => `
                         <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
                             <div class="flex items-center space-x-3">
                                 <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
@@ -245,8 +493,7 @@
         }
 
         function generateCards() {
-            const grid = document.getElementById('cardsGrid');
-            grid.innerHTML = '';
+            elements.cardsGrid.innerHTML = '';
 
             for (let i = 0; i < 3; i++) {
                 const card = document.createElement('div');
@@ -259,15 +506,160 @@
                 `;
 
                 if (i < availableCards) {
-                    card.onclick = () => scratchCard(i);
+                    card.onclick = () => startAdForScratchCard(i);
                 }
 
-                grid.appendChild(card);
+                elements.cardsGrid.appendChild(card);
             }
         }
 
-        async function scratchCard(cardIndex) {
+        function startAdForScratchCard(cardIndex) {
             try {
+                console.log('Starting ad for scratch card...');
+                currentCardIndex = cardIndex;
+                
+                // Expand the ad display
+                elements.adDisplay.classList.add('expanded');
+
+                // Show ad
+                elements.adDisplay.classList.remove('hidden');
+
+                // Load ad after a short delay
+                setTimeout(() => {
+                    showAdForScratchCard();
+                }, 1000);
+
+            } catch (error) {
+                console.error('Start ad error:', error);
+                showNotification(error.message || 'Failed to load ad', 'error');
+                resetAd();
+            }
+        }
+
+        function showAdForScratchCard() {
+            try {
+                console.log('Showing ad for scratch card...');
+                
+                // Load new ad directly in the container
+                loadNewAd();
+
+                // Start countdown
+                startCountdown();
+
+            } catch (error) {
+                console.error('Show ad error:', error);
+                resetAd();
+                showNotification('Failed to load advertisement', 'error');
+            }
+        }
+
+        function loadNewAd() {
+            try {
+                console.log('Loading new ad in container...');
+                
+                // Clear existing content
+                elements.externalAdContainer.innerHTML = '';
+                
+                // Create a new ad container with enhanced design
+                const newAdContainer = document.createElement('div');
+                newAdContainer.className = 'new-ad-container';
+                
+                newAdContainer.innerHTML = `
+                    <div class="new-ad-logo">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="new-ad-title">Premium Financial Services</div>
+                    <div class="new-ad-description">
+                        Join over 1 million users who have transformed their financial future with our premium investment platform. Get access to exclusive tools and insights.
+                    </div>
+                    <div class="new-ad-features">
+                        <div class="new-ad-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>High Returns</span>
+                        </div>
+                        <div class="new-ad-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Platform</span>
+                        </div>
+                        <div class="new-ad-feature">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Expert Analysis</span>
+                        </div>
+                        <div class="new-ad-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>24/7 Support</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 20px; width: 100%; max-width: 500px; height: 200px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #1e3a8a; font-weight: bold; font-size: 18px;">
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 10px;"></i>
+                            <div>Average Returns: 12.5% annually</div>
+                        </div>
+                    </div>
+                    <button class="new-ad-cta" id="adCtaButton">
+                        <i class="fas fa-rocket mr-2"></i> Get Started Now
+                    </button>
+                    <div class="new-ad-footer">
+                        Advertisement - Please watch for 15 seconds
+                    </div>
+                `;
+                
+                elements.externalAdContainer.appendChild(newAdContainer);
+                
+                // Add event listener to the CTA button
+                document.getElementById('adCtaButton').addEventListener('click', function() {
+                    processScratchCardAfterAd();
+                });
+
+            } catch (error) {
+                console.error('Error loading new ad:', error);
+                showFallbackAd();
+            }
+        }
+
+        function showFallbackAd() {
+            // Fallback ad content in case new ad fails
+            elements.externalAdContainer.innerHTML = `
+                <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
+                    <i class="fas fa-ad text-3xl text-white mb-3"></i>
+                    <h3 class="text-lg font-semibold mb-2">Scratch Card Reward</h3>
+                    <p class="text-gray-200 mb-4">Thank you for watching this advertisement</p>
+                    <div class="text-sm text-gray-300">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Advertisement - Watch full ad to claim reward
+                    </div>
+                </div>
+            `;
+        }
+
+        function startCountdown() {
+            let seconds = 15;
+            elements.countdown.textContent = seconds;
+
+            // Clear any existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            countdownInterval = setInterval(() => {
+                seconds--;
+                elements.countdown.textContent = seconds;
+
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    processScratchCardAfterAd();
+                }
+            }, 1000);
+        }
+
+        async function processScratchCardAfterAd() {
+            try {
+                console.log('Processing scratch card after ad...');
+                
+                // Hide ad
+                elements.adDisplay.classList.add('hidden');
+                resetAd();
+
                 // Check daily limit
                 if (todayEarnings.length >= 3) {
                     showNotification('Daily limit reached (3 cards)', 'error');
@@ -308,9 +700,9 @@
                 if (earningError) throw earningError;
 
                 // Show result
-                document.getElementById('wonCoins').textContent = coins;
-                document.getElementById('resultDisplay').classList.remove('hidden');
-                document.getElementById('resetButton').classList.remove('hidden');
+                elements.wonCoins.textContent = coins;
+                elements.resultDisplay.classList.remove('hidden');
+                elements.resetButton.classList.remove('hidden');
 
                 // Update UI
                 await loadTodayEarnings();
@@ -326,12 +718,33 @@
         }
 
         function resetCards() {
-            document.getElementById('resultDisplay').classList.add('hidden');
-            document.getElementById('resetButton').classList.add('hidden');
+            elements.resultDisplay.classList.add('hidden');
+            elements.resetButton.classList.add('hidden');
+        }
+
+        function resetAd() {
+            console.log('Resetting ad...');
+            
+            // Clear any existing intervals
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Reset to initial state
+            elements.adDisplay.classList.add('hidden');
+            elements.adDisplay.classList.remove('expanded');
+            
+            // Clear ad content
+            elements.externalAdContainer.innerHTML = `
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                <p class="text-lg font-semibold">Loading Ad</p>
+                <p class="text-gray-400 text-sm mt-1">Please wait...</p>
+            `;
         }
 
         function showNotification(message, type) {
-            const notification = document.getElementById('notification');
+            const notification = elements.notification;
             notification.textContent = message;
             notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-transform duration-300 ${
                 type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
