@@ -24,15 +24,16 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         #adDisplay {
-            min-height: 280px;
+            min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: #0f172a;
             border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            margin-bottom: 20px;
         }
         .countdown-timer {
             font-size: 3rem;
@@ -40,22 +41,18 @@
             color: #10b981;
             text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
         }
-        .ad-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #0f172a;
-            border-radius: 16px;
-            position: relative;
-        }
         .ad-placeholder {
             background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
             border: 2px dashed #6b7280;
             border-radius: 16px;
             padding: 2rem;
             text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .ad-overlay {
             position: absolute;
@@ -63,7 +60,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -85,7 +82,7 @@
         .ad-content {
             width: 100%;
             height: 100%;
-            min-height: 250px;
+            min-height: 380px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -114,6 +111,8 @@
             justify-content: center;
             flex-direction: column;
             color: white;
+            width: 100%;
+            height: 100%;
         }
         .ad-banner {
             display: flex;
@@ -133,6 +132,53 @@
             border-radius: 12px;
             position: relative;
             z-index: 10;
+        }
+        .timer-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            border: 2px solid #10b981;
+        }
+        .ad-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ad-header-text {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .ad-instructions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 10px 15px;
+            text-align: center;
+            z-index: 25;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ad-instructions-text {
+            color: #d1d5db;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -183,9 +229,9 @@
                 </div>
 
                 <!-- Ad Display Area -->
-                <div id="adDisplay" class="rounded-2xl mb-4 overflow-hidden">
+                <div id="adDisplay" class="rounded-2xl overflow-hidden">
                     <!-- Initial State - Visible by default -->
-                    <div id="initialAdState" class="text-center p-8 w-full h-full flex items-center justify-center">
+                    <div id="initialAdState" class="text-center w-full h-full flex items-center justify-center">
                         <div class="ad-placeholder">
                             <i class="fas fa-play-circle text-4xl text-green-500 mb-4"></i>
                             <h3 class="text-white font-semibold text-lg mb-2">Ready to Earn</h3>
@@ -195,26 +241,26 @@
                     
                     <!-- Active Ad State - Hidden by default -->
                     <div id="activeAdState" class="hidden w-full h-full">
-                        <div class="ad-container">
-                            <div class="ad-content">
-                                <!-- New ad content will be loaded here -->
-                                <div id="externalAdContainer" class="ad-frame-container">
-                                    <div class="ad-loading">
-                                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
-                                        <p class="text-lg font-semibold">Loading Ad</p>
-                                        <p class="text-gray-400 text-sm mt-1">Please wait...</p>
-                                    </div>
+                        <div class="ad-header">
+                            <span class="ad-header-text">Advertisement - Please watch the full ad</span>
+                        </div>
+                        
+                        <div class="timer-container">
+                            <div class="countdown-timer" id="countdown">15</div>
+                        </div>
+                        
+                        <div class="ad-content">
+                            <div id="externalAdContainer" class="ad-frame-container">
+                                <div class="ad-loading">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                                    <p class="text-lg font-semibold">Loading Ad</p>
+                                    <p class="text-gray-400 text-sm mt-1">Please wait...</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Countdown Overlay - Hidden by default -->
-                    <div id="countdownState" class="ad-overlay hidden">
-                        <div class="text-center">
-                            <div class="countdown-timer mb-4" id="countdown">15</div>
-                            <p class="text-white text-lg font-semibold">Please watch the ad</p>
-                            <p class="text-gray-400 mt-2">Stay on this screen to earn coins</p>
+                        
+                        <div class="ad-instructions">
+                            <p class="ad-instructions-text">Stay on this screen to earn coins</p>
                         </div>
                     </div>
                 </div>
@@ -223,7 +269,7 @@
                 <button 
                     onclick="startAd()"
                     id="watchButton"
-                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg pulse-animation"
+                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg pulse-animation mt-6"
                 >
                     <i class="fas fa-play-circle mr-2"></i>
                     Watch Ad & Earn Coins
@@ -331,7 +377,6 @@
         const elements = {
             initialAdState: document.getElementById('initialAdState'),
             activeAdState: document.getElementById('activeAdState'),
-            countdownState: document.getElementById('countdownState'),
             loadingState: document.getElementById('loadingState'),
             resultState: document.getElementById('resultState'),
             watchButton: document.getElementById('watchButton'),
@@ -471,12 +516,8 @@
                 // Load external ad
                 loadExternalAd();
 
-                // Show countdown after a brief delay to ensure ad is visible
-                setTimeout(() => {
-                    elements.countdownState.classList.remove('hidden');
-                    // Start countdown
-                    startCountdown();
-                }, 500);
+                // Start countdown
+                startCountdown();
 
             } catch (error) {
                 console.error('Show ad error:', error);
@@ -558,7 +599,6 @@
                 
                 // Hide ad and show loading
                 elements.activeAdState.classList.add('hidden');
-                elements.countdownState.classList.add('hidden');
                 elements.loadingState.classList.remove('hidden');
 
                 // Process ad reward
@@ -629,7 +669,6 @@
             // Reset all states to initial
             elements.resultState.classList.add('hidden');
             elements.activeAdState.classList.add('hidden');
-            elements.countdownState.classList.add('hidden');
             elements.loadingState.classList.add('hidden');
             elements.initialAdState.classList.remove('hidden');
             
