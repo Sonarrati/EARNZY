@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - Earnzy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --gray: #6b7280;
+            --dark: #1f2937;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 20px;
+        }
+        
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .logo-text p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .user-actions button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-actions button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Page Header */
+        .page-header {
+            margin: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+        }
+        
+        .task-stats {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .stat-badge {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-badge i {
+            color: var(--primary);
+        }
+        
+        /* Task Categories */
+        .task-categories {
+            margin: 24px 0;
+        }
+        
+        .categories-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        
+        .category-btn {
+            background-color: var(--white);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        .category-btn.active {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        /* Tasks Section */
+        .tasks-section {
+            margin: 24px 0;
+        }
+        
+        .tasks-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .view-all {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+        
+        .task-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 20px;
+        }
+        
+        .task-details {
+            flex: 1;
+        }
+        
+        .task-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .task-details p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+        
+        .task-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .task-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .task-reward {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 16px;
+            margin-right: 16px;
+        }
+        
+        .task-action button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+        
+        .task-action button.completed {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .task-action button:hover:not(.completed) {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Progress Section */
+        .progress-section {
+            margin: 24px 0;
+        }
+        
+        .progress-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .progress-value {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 4px;
+            width: 65%;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--white);
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 12px 0;
+            z-index: 100;
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            transition: color 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .categories-container {
+                justify-content: center;
+            }
+            
+            .task-item {
+                padding: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Earnzy</h1>
+                        <p id="userName">Tasks & Rewards</p>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button id="signOutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-title">Daily Tasks</div>
+            <div class="task-stats">
+                <div class="stat-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <span>5/12 Completed</span>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-coins"></i>
+                    <span>+325 Today</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Task Categories -->
+    <section class="task-categories">
+        <div class="container">
+            <div class="categories-container">
+                <button class="category-btn active">All Tasks</button>
+                <button class="category-btn">Daily</button>
+                <button class="category-btn">Social</button>
+                <button class="category-btn">Offers</button>
+                <button class="category-btn">Surveys</button>
+                <button class="category-btn">Games</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section class="progress-section">
+        <div class="container">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <div class="progress-title">Daily Goal Progress</div>
+                    <div class="progress-value">325/500 coins</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="progress-text">Complete 3 more tasks to reach your daily goal</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Tasks -->
+    <section class="tasks-section">
+        <div class="container">
+            <div class="tasks-card">
+                <div class="section-header">
+                    <div class="section-title">Daily Tasks</div>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                
+                <!-- Task 1 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #f59e0b;">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Rate our App</h3>
+                            <p>Give us a 5-star rating on the app store</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 5 min</span>
+                                <span><i class="fas fa-users"></i> 12.4k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+50</div>
+                    <div class="task-action">
+                        <button>Start</button>
+                    </div>
+                </div>
+                
+                <!-- Task 2 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #3b82f6;">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Follow on Facebook</h3>
+                            <p>Like and follow our Facebook page</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 2 min</span>
+                                <span><i class="fas fa-users"></i> 8.7k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+30</div>
+                    <div class="task-action">
+                        <button>Start</button>
+                    </div>
+                </div>
+                
+                <!-- Task 3 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #8b5cf6;">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Follow on Instagram</h3>
+                            <p>Follow our Instagram account</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 2 min</span>
+                                <span><i class="fas fa-users"></i> 10.2k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+30</div>
+                    <div class="task-action">
+                        <button>Start</button>
+                    </div>
+                </div>
+                
+                <!-- Task 4 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #10b981;">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Share with Friends</h3>
+                            <p>Share Earnzy with 3 friends</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 3 min</span>
+                                <span><i class="fas fa-users"></i> 5.9k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+25</div>
+                    <div class="task-action">
+                        <button class="completed">Completed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offers -->
+    <section class="tasks-section">
+        <div class="container">
+            <div class="tasks-card">
+                <div class="section-header">
+                    <div class="section-title">Special Offers</div>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                
+                <!-- Task 5 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #ef4444;">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Play Mobile Game</h3>
+                            <p>Reach level 10 in "Dragon Adventure"</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 15-20 min</span>
+                                <span><i class="fas fa-users"></i> 3.2k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+150</div>
+                    <div class="task-action">
+                        <button>Start</button>
+                    </div>
+                </div>
+                
+                <!-- Task 6 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #f97316;">
+                            <i class="fas fa-poll"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Complete Survey</h3>
+                            <p>Share your opinion about mobile apps</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 8 min</span>
+                                <span><i class="fas fa-users"></i> 6.1k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+80</div>
+                    <div class="task-action">
+                        <button class="completed">Completed</button>
+                    </div>
+                </div>
+                
+                <!-- Task 7 -->
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-icon" style="background-color: #06b6d4;">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Watch Video</h3>
+                            <p>Watch a 2-minute product video</p>
+                            <div class="task-meta">
+                                <span><i class="fas fa-clock"></i> 3 min</span>
+                                <span><i class="fas fa-users"></i> 15.7k completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-reward">+20</div>
+                    <div class="task-action">
+                        <button>Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="container">
+            <div class="nav-grid">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="tasks.html" class="nav-item active">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tasks</span>
+                </a>
+                <a href="earn.html" class="nav-item">
+                    <i class="fas fa-coins"></i>
+                    <span>Earn</span>
+                </a>
+                <a href="wallet.html" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        // Simulate loading user data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loading overlay
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            // Simulate API call delay
+            setTimeout(function() {
+                // Hide loading overlay
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }, 1000);
+            
+            // Add click handlers for category buttons
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Add click handlers for task buttons
+            const taskButtons = document.querySelectorAll('.task-action button:not(.completed)');
+            taskButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.textContent === 'Start') {
+                        // Show loading
+                        document.getElementById('loadingOverlay').style.display = 'flex';
+                        
+                        // Simulate task completion
+                        setTimeout(function() {
+                            document.getElementById('loadingOverlay').style.display = 'none';
+                            button.textContent = 'Completed';
+                            button.classList.add('completed');
+                            
+                            // Show success message
+                            alert('Task completed! Coins have been added to your wallet.');
+                        }, 2000);
+                    }
+                });
+            });
+            
+            // Sign out button handler
+            document.getElementById('signOutBtn').addEventListener('click', function() {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                
+                setTimeout(function() {
+                    alert('You have been signed out successfully.');
+                    // In a real app, this would redirect to login page
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
