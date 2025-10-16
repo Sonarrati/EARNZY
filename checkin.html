@@ -31,7 +31,7 @@
             transform: scale(1.1);
         }
         #adDisplay {
-            min-height: 500px;
+            min-height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -39,11 +39,10 @@
             border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.5);
             position: relative;
-            overflow: visible;
+            overflow: hidden;
             margin-bottom: 20px;
             width: 100%;
-            height: auto;
-            transition: min-height 0.3s ease;
+            transition: min-height 0.5s ease;
         }
         #adDisplay.expanded {
             min-height: 600px;
@@ -180,7 +179,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: visible;
+            overflow: hidden;
         }
         .ad-banner-container {
             display: flex;
@@ -200,6 +199,22 @@
             border: none;
             border-radius: 12px;
             background: white;
+        }
+        .ad-frame-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .ad-frame-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -567,7 +582,7 @@
             try {
                 console.log('Starting ad for daily check-in...');
                 
-                // Expand the ad display
+                // Expand the ad display to full height
                 elements.adDisplay.classList.add('expanded');
 
                 // Hide check-in status and show ad
@@ -628,7 +643,13 @@
                     <html>
                     <head>
                         <title>Advertisement</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <style>
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                            }
                             body {
                                 margin: 0;
                                 padding: 20px;
@@ -639,11 +660,13 @@
                                 flex-direction: column;
                                 align-items: center;
                                 justify-content: center;
-                                height: 100vh;
+                                min-height: 100vh;
                                 text-align: center;
+                                overflow: hidden;
                             }
                             .ad-content {
                                 max-width: 400px;
+                                width: 100%;
                             }
                             .ad-title {
                                 font-size: 24px;
@@ -665,6 +688,7 @@
                                 font-weight: bold;
                                 cursor: pointer;
                                 transition: all 0.3s ease;
+                                margin-top: 10px;
                             }
                             .ad-cta:hover {
                                 background: #ff5252;
@@ -673,6 +697,18 @@
                             .ad-logo {
                                 font-size: 48px;
                                 margin-bottom: 20px;
+                            }
+                            .ad-image {
+                                width: 100%;
+                                max-width: 300px;
+                                height: auto;
+                                border-radius: 10px;
+                                margin: 15px 0;
+                            }
+                            .ad-footer {
+                                margin-top: 20px;
+                                font-size: 12px;
+                                opacity: 0.8;
                             }
                         </style>
                     </head>
@@ -685,10 +721,14 @@
                             <div class="ad-description">
                                 Thank you for watching this advertisement. This helps support our app and allows us to provide you with free rewards.
                             </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 15px 0;">
+                                <h3 style="margin-bottom: 10px;">Limited Time Offer</h3>
+                                <p style="font-size: 14px;">Get 50% off on our premium subscription when you sign up today!</p>
+                            </div>
                             <button class="ad-cta" onclick="window.parent.postMessage('adCompleted', '*')">
                                 Continue to Reward
                             </button>
-                            <div style="margin-top: 20px; font-size: 12px; opacity: 0.8;">
+                            <div class="ad-footer">
                                 Advertisement - Please watch for 15 seconds
                             </div>
                         </div>
@@ -704,6 +744,11 @@
                             document.querySelector('.ad-cta').addEventListener('click', function() {
                                 window.parent.postMessage('adCompleted', '*');
                             });
+                            
+                            // Auto-complete after 15 seconds if user doesn't click
+                            setTimeout(function() {
+                                window.parent.postMessage('adCompleted', '*');
+                            }, 15000);
                         <\/script>
                     </body>
                     </html>
