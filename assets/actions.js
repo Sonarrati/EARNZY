@@ -150,3 +150,136 @@ async function openTreasure() {
         return { success: false, message: 'An error occurred' };
     }
 }
+
+// Task-related functions
+async function completeTask(taskId, reward) {
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return { success: false, message: 'Not authenticated' };
+
+        // Check if task already completed today
+        const today = new Date().toISOString().split('T')[0];
+        const { data: existing, error: checkError } = await supabase
+            .from('user_tasks')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('task_id', taskId)
+            .gte('completed_at', today)
+            .single();
+
+        if (existing) {
+            return { success: false, message: 'Task already completed today' };
+        }
+
+        // Update user coins and add task record
+        const coinUpdated = await updateCoins(user.id, reward, 'task');
+        const taskRecorded = await addTaskRecord(user.id, taskId, reward);
+
+        if (coinUpdated && taskRecorded) {
+            return { success: true, coins: reward };
+        } else {
+            return { success: false, message: 'Failed to complete task' };
+        }
+    } catch (error) {
+        console.error('Complete task error:', error);
+        return { success: false, message: 'An error occurred' };
+    }
+}
+
+async function addTaskRecord(userId, taskId, reward) {
+    try {
+        const { error } = await supabase
+            .from('user_tasks')
+            .insert([
+                {
+                    user_id: userId,
+                    task_id: taskId,
+                    reward: reward,
+                    completed_at: new Date().toISOString()
+                }
+            ]);
+
+        return !error;
+    } catch (error) {
+        console.error('Add task record error:', error);
+        return false;
+    }
+}
+
+// Helper functions
+async function checkDailyLimit(userId, type) {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const { data, error } = await supabase
+            .from('earnings')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('type', type)
+            .gte('created_at', today);
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error('Check daily limit error:', error);
+        return [];
+    }
+}
+
+async function updateCoins(userId, coins, type = 'earn') {
+    try {
+        // Get current user data
+        const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+        if (userError) throw userError;
+
+        const updateData = {
+            total_coins: (userData.total_coins || 0) + coins,
+            earned_coins: (userData.earned_coins || 0) + coins,
+            updated_at: new Date().toISOString()
+        };
+
+        // Add to daily earnings if it's a task
+        if (type === 'task') {
+            updateData.daily_earnings = (userData.daily_earnings || 0) + coins;
+        }
+
+        const { error } = await supabase
+            .from('users')
+            .update(updateData)
+            .eq('id', userId);
+
+        return !error;
+    } catch (error) {
+        console.error('Update coins error:', error);
+        return false;
+    }
+}
+
+async function addEarningRecord(userId, type, coins) {
+    try {
+        const { error } = await supabase
+            .from('earnings')
+            .insert([
+                {
+                    user_id: userId,
+                    type: type,
+                    coins: coins,
+                    created_at: new Date().toISOString()
+                }
+            ]);
+
+        return !error;
+    } catch (error) {
+        console.error('Add earning record error:', error);
+        return false;
+    }
+}
+
+// Initialize Supabase
+const SUPABASE_URL = 'https://qwoqpwyjugfsiwlwvmlf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3b3Fwd3lqdWdmc2l3bHd2bWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NzkzNDAsImV4cCI6MjA3NTA1NTM0MH0.36cfavBebNeF4SLuar3jUTRORYnhaOhc6A5xuF4HvLw';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
