@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasks - Earnzy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -440,11 +441,11 @@
             <div class="task-stats">
                 <div class="stat-badge">
                     <i class="fas fa-check-circle"></i>
-                    <span>5/12 Completed</span>
+                    <span id="completedStats">0/0 Completed</span>
                 </div>
                 <div class="stat-badge">
                     <i class="fas fa-coins"></i>
-                    <span>+325 Today</span>
+                    <span id="todayEarnings">+0 Today</span>
                 </div>
             </div>
         </div>
@@ -470,12 +471,12 @@
             <div class="progress-card">
                 <div class="progress-header">
                     <div class="progress-title">Daily Goal Progress</div>
-                    <div class="progress-value">325/500 coins</div>
+                    <div class="progress-value" id="progressValue">0/500 coins</div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill"></div>
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <div class="progress-text">Complete 3 more tasks to reach your daily goal</div>
+                <div class="progress-text" id="progressText">Complete tasks to reach your daily goal</div>
             </div>
         </div>
     </section>
@@ -488,89 +489,8 @@
                     <div class="section-title">Daily Tasks</div>
                     <a href="#" class="view-all">View All</a>
                 </div>
-                
-                <!-- Task 1 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #f59e0b;">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Rate our App</h3>
-                            <p>Give us a 5-star rating on the app store</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 5 min</span>
-                                <span><i class="fas fa-users"></i> 12.4k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+50</div>
-                    <div class="task-action">
-                        <button>Start</button>
-                    </div>
-                </div>
-                
-                <!-- Task 2 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #3b82f6;">
-                            <i class="fab fa-facebook"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Follow on Facebook</h3>
-                            <p>Like and follow our Facebook page</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 2 min</span>
-                                <span><i class="fas fa-users"></i> 8.7k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+30</div>
-                    <div class="task-action">
-                        <button>Start</button>
-                    </div>
-                </div>
-                
-                <!-- Task 3 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #8b5cf6;">
-                            <i class="fab fa-instagram"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Follow on Instagram</h3>
-                            <p>Follow our Instagram account</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 2 min</span>
-                                <span><i class="fas fa-users"></i> 10.2k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+30</div>
-                    <div class="task-action">
-                        <button>Start</button>
-                    </div>
-                </div>
-                
-                <!-- Task 4 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #10b981;">
-                            <i class="fas fa-share-alt"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Share with Friends</h3>
-                            <p>Share Earnzy with 3 friends</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 3 min</span>
-                                <span><i class="fas fa-users"></i> 5.9k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+25</div>
-                    <div class="task-action">
-                        <button class="completed">Completed</button>
-                    </div>
+                <div id="dailyTasksContainer">
+                    <!-- Dynamic daily tasks will be loaded here -->
                 </div>
             </div>
         </div>
@@ -584,68 +504,8 @@
                     <div class="section-title">Special Offers</div>
                     <a href="#" class="view-all">View All</a>
                 </div>
-                
-                <!-- Task 5 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #ef4444;">
-                            <i class="fas fa-gamepad"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Play Mobile Game</h3>
-                            <p>Reach level 10 in "Dragon Adventure"</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 15-20 min</span>
-                                <span><i class="fas fa-users"></i> 3.2k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+150</div>
-                    <div class="task-action">
-                        <button>Start</button>
-                    </div>
-                </div>
-                
-                <!-- Task 6 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #f97316;">
-                            <i class="fas fa-poll"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Complete Survey</h3>
-                            <p>Share your opinion about mobile apps</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 8 min</span>
-                                <span><i class="fas fa-users"></i> 6.1k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+80</div>
-                    <div class="task-action">
-                        <button class="completed">Completed</button>
-                    </div>
-                </div>
-                
-                <!-- Task 7 -->
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-icon" style="background-color: #06b6d4;">
-                            <i class="fas fa-video"></i>
-                        </div>
-                        <div class="task-details">
-                            <h3>Watch Video</h3>
-                            <p>Watch a 2-minute product video</p>
-                            <div class="task-meta">
-                                <span><i class="fas fa-clock"></i> 3 min</span>
-                                <span><i class="fas fa-users"></i> 15.7k completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="task-reward">+20</div>
-                    <div class="task-action">
-                        <button>Start</button>
-                    </div>
+                <div id="specialTasksContainer">
+                    <!-- Dynamic special tasks will be loaded here -->
                 </div>
             </div>
         </div>
@@ -685,58 +545,328 @@
     </div>
 
     <script>
-        // Simulate loading user data
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://qwoqpwyjugfsiwlwvmlf.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3b3Fwd3lqdWdmc2l3bHd2bWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NzkzNDAsImV4cCI6MjA3NTA1NTM0MH0.36cfavBebNeF4SLuar3jUTRORYnhaOhc6A5xuF4HvLw';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUser = null;
+        let userData = null;
+        let tasks = [];
+        let completedTasks = [];
+
         document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
             // Show loading overlay
             document.getElementById('loadingOverlay').style.display = 'flex';
             
-            // Simulate API call delay
-            setTimeout(function() {
-                // Hide loading overlay
-                document.getElementById('loadingOverlay').style.display = 'none';
-            }, 1000);
+            // Check authentication
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
             
-            // Add click handlers for category buttons
+            currentUser = session.user;
+            
+            // Load user data and tasks
+            await loadUserData();
+            await loadTasks();
+            await loadCompletedTasks();
+            
+            // Update UI
+            updateUI();
+            
+            // Hide loading overlay
+            document.getElementById('loadingOverlay').style.display = 'none';
+            
+            // Setup event listeners
+            setupEventListeners();
+        }
+
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+                userData = data;
+                
+                // If user doesn't exist, create user record
+                if (!userData) {
+                    const { data: newUser, error: createError } = await supabase
+                        .from('users')
+                        .insert([
+                            {
+                                id: currentUser.id,
+                                email: currentUser.email,
+                                total_coins: 0,
+                                earned_coins: 0,
+                                daily_earnings: 0,
+                                daily_goal: 500,
+                                completed_tasks: [],
+                                created_at: new Date().toISOString()
+                            }
+                        ])
+                        .select()
+                        .single();
+
+                    if (createError) throw createError;
+                    userData = newUser;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        async function loadTasks() {
+            try {
+                const { data, error } = await supabase
+                    .from('tasks')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+                tasks = data || [];
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                tasks = [];
+            }
+        }
+
+        async function loadCompletedTasks() {
+            try {
+                const { data, error } = await supabase
+                    .from('user_tasks')
+                    .select('task_id')
+                    .eq('user_id', currentUser.id);
+
+                if (error) throw error;
+                completedTasks = data.map(item => item.task_id) || [];
+            } catch (error) {
+                console.error('Error loading completed tasks:', error);
+                completedTasks = [];
+            }
+        }
+
+        function updateUI() {
+            // Update user name
+            document.getElementById('userName').textContent = userData?.name || userData?.email || 'Tasks & Rewards';
+            
+            // Update stats
+            updateStats();
+            
+            // Update progress
+            updateProgress();
+            
+            // Render tasks
+            renderTasks();
+        }
+
+        function updateStats() {
+            const completedCount = completedTasks.length;
+            const totalTasks = tasks.length;
+            const todayEarnings = userData?.daily_earnings || 0;
+            
+            document.getElementById('completedStats').textContent = `${completedCount}/${totalTasks} Completed`;
+            document.getElementById('todayEarnings').textContent = `+${todayEarnings} Today`;
+        }
+
+        function updateProgress() {
+            const dailyGoal = userData?.daily_goal || 500;
+            const todayEarnings = userData?.daily_earnings || 0;
+            const progressPercentage = Math.min((todayEarnings / dailyGoal) * 100, 100);
+            
+            document.getElementById('progressValue').textContent = `${todayEarnings}/${dailyGoal} coins`;
+            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+            
+            const remaining = dailyGoal - todayEarnings;
+            const tasksNeeded = Math.ceil(remaining / 50); // Assuming average task gives 50 coins
+            document.getElementById('progressText').textContent = 
+                `Complete ${tasksNeeded} more tasks to reach your daily goal`;
+        }
+
+        function renderTasks() {
+            renderTaskSection('daily', 'dailyTasksContainer');
+            renderTaskSection('special', 'specialTasksContainer');
+        }
+
+        function renderTaskSection(category, containerId) {
+            const container = document.getElementById(containerId);
+            const filteredTasks = tasks.filter(task => task.category === category);
+            
+            if (filteredTasks.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-tasks text-3xl mb-2"></i>
+                        <p>No tasks available</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredTasks.map(task => {
+                const isCompleted = completedTasks.includes(task.id);
+                const completedCount = task.completed_count || 0;
+                
+                return `
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-icon" style="background-color: ${task.color || '#10b981'};">
+                                <i class="${task.icon || 'fas fa-tasks'}"></i>
+                            </div>
+                            <div class="task-details">
+                                <h3>${task.title}</h3>
+                                <p>${task.description}</p>
+                                <div class="task-meta">
+                                    <span><i class="fas fa-clock"></i> ${task.duration} min</span>
+                                    <span><i class="fas fa-users"></i> ${completedCount.toLocaleString()} completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-reward">+${task.reward}</div>
+                        <div class="task-action">
+                            <button 
+                                class="${isCompleted ? 'completed' : ''}" 
+                                ${isCompleted ? 'disabled' : ''}
+                                onclick="startTask('${task.id}', ${task.reward})"
+                            >
+                                ${isCompleted ? 'Completed' : 'Start'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function startTask(taskId, reward) {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            try {
+                // Check if task is already completed
+                if (completedTasks.includes(taskId)) {
+                    alert('Task already completed!');
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    return;
+                }
+
+                // Simulate task completion (in real app, this would have actual task flow)
+                setTimeout(async () => {
+                    await completeTask(taskId, reward);
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error starting task:', error);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert('Error starting task. Please try again.');
+            }
+        }
+
+        async function completeTask(taskId, reward) {
+            try {
+                // Update user coins
+                const { error: userError } = await supabase
+                    .from('users')
+                    .update({
+                        total_coins: (userData.total_coins || 0) + reward,
+                        earned_coins: (userData.earned_coins || 0) + reward,
+                        daily_earnings: (userData.daily_earnings || 0) + reward,
+                        completed_tasks: [...(userData.completed_tasks || []), taskId]
+                    })
+                    .eq('id', currentUser.id);
+
+                if (userError) throw userError;
+
+                // Record task completion
+                const { error: taskError } = await supabase
+                    .from('user_tasks')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            task_id: taskId,
+                            reward: reward,
+                            completed_at: new Date().toISOString()
+                        }
+                    ]);
+
+                if (taskError) throw taskError;
+
+                // Update task completion count
+                const task = tasks.find(t => t.id === taskId);
+                const { error: updateTaskError } = await supabase
+                    .from('tasks')
+                    .update({
+                        completed_count: (task.completed_count || 0) + 1
+                    })
+                    .eq('id', taskId);
+
+                if (updateTaskError) throw updateTaskError;
+
+                // Add earning record
+                const { error: earningError } = await supabase
+                    .from('earnings')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            type: 'task',
+                            coins: reward,
+                            task_id: taskId,
+                            created_at: new Date().toISOString()
+                        }
+                    ]);
+
+                if (earningError) throw earningError;
+
+                // Reload data
+                await loadUserData();
+                await loadCompletedTasks();
+                await loadTasks();
+                
+                // Update UI
+                updateUI();
+                
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert(`Task completed! ${reward} coins have been added to your wallet.`);
+
+            } catch (error) {
+                console.error('Error completing task:', error);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert('Error completing task. Please try again.');
+            }
+        }
+
+        function setupEventListeners() {
+            // Category buttons
             const categoryButtons = document.querySelectorAll('.category-btn');
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     categoryButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
+                    // Implement category filtering if needed
                 });
             });
-            
-            // Add click handlers for task buttons
-            const taskButtons = document.querySelectorAll('.task-action button:not(.completed)');
-            taskButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (this.textContent === 'Start') {
-                        // Show loading
-                        document.getElementById('loadingOverlay').style.display = 'flex';
-                        
-                        // Simulate task completion
-                        setTimeout(function() {
-                            document.getElementById('loadingOverlay').style.display = 'none';
-                            button.textContent = 'Completed';
-                            button.classList.add('completed');
-                            
-                            // Show success message
-                            alert('Task completed! Coins have been added to your wallet.');
-                        }, 2000);
-                    }
-                });
-            });
-            
-            // Sign out button handler
-            document.getElementById('signOutBtn').addEventListener('click', function() {
+
+            // Sign out button
+            document.getElementById('signOutBtn').addEventListener('click', async function() {
                 document.getElementById('loadingOverlay').style.display = 'flex';
-                
-                setTimeout(function() {
-                    alert('You have been signed out successfully.');
-                    // In a real app, this would redirect to login page
+                try {
+                    const { error } = await supabase.auth.signOut();
+                    if (!error) {
+                        window.location.href = 'login.html';
+                    }
+                } catch (error) {
+                    console.error('Sign out error:', error);
                     document.getElementById('loadingOverlay').style.display = 'none';
-                }, 1000);
+                }
             });
-        });
+        }
     </script>
 </body>
 </html>
