@@ -497,6 +497,16 @@
                 // Create a container for the ad
                 const adContainer = document.createElement('div');
                 adContainer.className = 'new-ad-container';
+                adContainer.style.minHeight = '400px';
+                adContainer.style.display = 'flex';
+                adContainer.style.alignItems = 'center';
+                adContainer.style.justifyContent = 'center';
+                adContainer.style.flexDirection = 'column';
+                adContainer.style.padding = '20px';
+                adContainer.style.background = 'white';
+                adContainer.style.borderRadius = '12px';
+                
+                // Add loading message
                 adContainer.innerHTML = `
                     <div style="text-align: center; padding: 20px;">
                         <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333;">Loading Advertisement</h3>
@@ -531,40 +541,53 @@
             adContainer.style.justifyContent = 'center';
             adContainer.style.flexDirection = 'column';
             adContainer.style.padding = '20px';
+            adContainer.style.background = 'white';
+            adContainer.style.borderRadius = '12px';
             
-            // Add the ad script directly
-            const script1 = document.createElement('script');
-            script1.type = 'text/javascript';
-            script1.innerHTML = `
-                atOptions = {
-                    'key' : 'm.FxzGdtGhNfv_ZGGVUV/IeRm/9TujZ/UplJkhP_T/YF2hNczOUK4NMKjbEDtFNljgYl3TNjTFgOynMmi/Zos/aIWo1LpxdhDR0Px_',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
+            // Add your ad script directly
+            const adScript = document.createElement('script');
+            adScript.innerHTML = `
+                (function(hnh){
+                    var d = document,
+                        s = d.createElement('script'),
+                        l = d.scripts[d.scripts.length - 1];
+                    s.settings = hnh || {};
+                    s.src = "//scientific-husband.com/bAX.VnsVdDG/ly0FYHWVcT/deuma9TucZKUfl/kgPBT/Y/2/N_zAkv1/NGDrIstHNYj/Yz3IOHToUz0dMWwJ";
+                    s.async = true;
+                    s.referrerPolicy = 'no-referrer-when-downgrade';
+                    l.parentNode.insertBefore(s, l);
+                })({})
             `;
             
-            const script2 = document.createElement('script');
-            script2.type = 'text/javascript';
-            script2.src = '//www.highperformanceformat.com/m.FxzGdtGhNfv_ZGGVUV/IeRm/9TujZ/UplJkhP_T/YF2hNczOUK4NMKjbEDtFNljgYl3TNjTFgOynMmi/Zos/aIWo1LpxdhDR0Px_/invoke.js';
-            
-            // Create a div where the ad will be inserted
+            // Add a placeholder where the ad will appear
             const adPlaceholder = document.createElement('div');
             adPlaceholder.id = 'ad-placeholder';
             adPlaceholder.style.width = '100%';
-            adPlaceholder.style.textAlign = 'center';
+            adPlaceholder.style.minHeight = '300px';
+            adPlaceholder.style.display = 'flex';
+            adPlaceholder.style.alignItems = 'center';
+            adPlaceholder.style.justifyContent = 'center';
+            adPlaceholder.style.background = '#f8fafc';
+            adPlaceholder.style.borderRadius = '8px';
+            adPlaceholder.style.border = '2px dashed #d1d5db';
+            adPlaceholder.innerHTML = `
+                <div style="text-align: center; color: #6b7280;">
+                    <i class="fas fa-ad" style="font-size: 32px; margin-bottom: 10px;"></i>
+                    <p>Advertisement will appear here</p>
+                </div>
+            `;
             
             adContainer.appendChild(adPlaceholder);
+            adContainer.appendChild(adScript);
             elements.externalAdContainer.appendChild(adContainer);
-            
-            // Append scripts
-            elements.externalAdContainer.appendChild(script1);
-            elements.externalAdContainer.appendChild(script2);
             
             // Add a fallback in case ad doesn't load
             setTimeout(() => {
-                if (adContainer.innerHTML.includes('iframe') === false) {
+                // Check if ad loaded by looking for iframes or other ad elements
+                const iframes = adContainer.getElementsByTagName('iframe');
+                const scripts = adContainer.getElementsByTagName('script');
+                
+                if (iframes.length === 0 && scripts.length <= 1) {
                     showFallbackAd();
                 }
             }, 3000);
