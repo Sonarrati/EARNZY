@@ -509,9 +509,9 @@
                 // Add loading message
                 adContainer.innerHTML = `
                     <div style="text-align: center; padding: 20px;">
-                        <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333;">Loading Advertisement</h3>
-                        <p style="color: #666; margin-bottom: 20px;">Please wait while we load the ad...</p>
                         <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                        <p class="text-lg font-semibold">Loading Advertisement</p>
+                        <p class="text-gray-400 text-sm mt-1">Please wait...</p>
                     </div>
                 `;
                 
@@ -524,7 +524,7 @@
 
             } catch (error) {
                 console.error('Error loading new ad:', error);
-                showFallbackAd();
+                loadAdScript(); // Still try to load the ad script
             }
         }
 
@@ -543,23 +543,14 @@
             adContainer.style.padding = '20px';
             adContainer.style.background = 'white';
             adContainer.style.borderRadius = '12px';
+            adContainer.style.width = '100%';
             
             // Add your ad script directly
             const adScript = document.createElement('script');
-            adScript.innerHTML = `
-                (function(hnh){
-                    var d = document,
-                        s = d.createElement('script'),
-                        l = d.scripts[d.scripts.length - 1];
-                    s.settings = hnh || {};
-                    s.src = "//scientific-husband.com/bAX.VnsVdDG/ly0FYHWVcT/deuma9TucZKUfl/kgPBT/Y/2/N_zAkv1/NGDrIstHNYj/Yz3IOHToUz0dMWwJ";
-                    s.async = true;
-                    s.referrerPolicy = 'no-referrer-when-downgrade';
-                    l.parentNode.insertBefore(s, l);
-                })({})
-            `;
+            adScript.type = 'text/javascript';
+            adScript.src = '//pl27796166.effectivegatecpm.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js';
             
-            // Add a placeholder where the ad will appear
+            // Create a placeholder where the ad will appear
             const adPlaceholder = document.createElement('div');
             adPlaceholder.id = 'ad-placeholder';
             adPlaceholder.style.width = '100%';
@@ -569,11 +560,10 @@
             adPlaceholder.style.justifyContent = 'center';
             adPlaceholder.style.background = '#f8fafc';
             adPlaceholder.style.borderRadius = '8px';
-            adPlaceholder.style.border = '2px dashed #d1d5db';
             adPlaceholder.innerHTML = `
                 <div style="text-align: center; color: #6b7280;">
                     <i class="fas fa-ad" style="font-size: 32px; margin-bottom: 10px;"></i>
-                    <p>Advertisement will appear here</p>
+                    <p>Advertisement loading...</p>
                 </div>
             `;
             
@@ -581,44 +571,10 @@
             adContainer.appendChild(adScript);
             elements.externalAdContainer.appendChild(adContainer);
             
-            // Add a fallback in case ad doesn't load
+            // Auto-complete after 15 seconds if ad doesn't trigger completion
             setTimeout(() => {
-                // Check if ad loaded by looking for iframes or other ad elements
-                const iframes = adContainer.getElementsByTagName('iframe');
-                const scripts = adContainer.getElementsByTagName('script');
-                
-                if (iframes.length === 0 && scripts.length <= 1) {
-                    showFallbackAd();
-                }
-            }, 3000);
-        }
-
-        function showFallbackAd() {
-            elements.externalAdContainer.innerHTML = '';
-            
-            const fallbackAd = document.createElement('div');
-            fallbackAd.className = 'new-ad-container';
-            fallbackAd.innerHTML = `
-                <div style="text-align: center; padding: 20px;">
-                    <i class="fas fa-ad" style="font-size: 48px; color: #10b981; margin-bottom: 20px;"></i>
-                    <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 15px; color: #333;">Special Offer</h3>
-                    <p style="color: #666; margin-bottom: 20px; line-height: 1.5;">
-                        Thank you for watching this advertisement. This helps support our app and allows us to provide you with free rewards.
-                    </p>
-                    <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #10b981;">
-                        <h4 style="font-weight: bold; margin-bottom: 10px; color: #047857;">Limited Time Offer</h4>
-                        <p style="color: #666; font-size: 14px;">Complete this ad view to earn your scratch card reward!</p>
-                    </div>
-                    <button onclick="window.processScratchCardAfterAd()" style="background: #10b981; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;">
-                        Continue to Reward
-                    </button>
-                    <p style="color: #999; font-size: 12px; margin-top: 15px;">
-                        <i class="fas fa-info-circle"></i> Advertisement - Please wait for the timer to complete
-                    </p>
-                </div>
-            `;
-            
-            elements.externalAdContainer.appendChild(fallbackAd);
+                processScratchCardAfterAd();
+            }, 15000);
         }
 
         function startCountdown() {
@@ -744,9 +700,6 @@
                 notification.classList.add('hidden');
             }, 3000);
         }
-
-        // Make function available globally for fallback button
-        window.processScratchCardAfterAd = processScratchCardAfterAd;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', loadScratchPage);
