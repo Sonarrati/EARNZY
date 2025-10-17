@@ -223,12 +223,40 @@
             justify-content: center;
             margin: 20px 0;
         }
-        .direct-ad-frame {
+        .special-offer-container {
             width: 100%;
             height: 100%;
-            border: none;
-            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
             background: white;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .special-offer-icon {
+            font-size: 60px;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+        .special-offer-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+        .special-offer-text {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-bottom: 25px;
+        }
+        .support-text {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -278,7 +306,7 @@
                     <div id="activeAdState" class="w-full h-full">
                         <div class="ad-container">
                             <div class="ad-content">
-                                <!-- Direct Ad will be loaded here -->
+                                <!-- Ad will be loaded here -->
                                 <div id="externalAdContainer" class="ad-loading">
                                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                                     <p class="text-lg font-semibold">Loading Ad</p>
@@ -529,8 +557,10 @@
                 // Show ad
                 elements.adDisplay.classList.remove('hidden');
 
-                // Load ad immediately
-                showAdForTreasure();
+                // Load ad after a short delay
+                setTimeout(() => {
+                    showAdForTreasure();
+                }, 1000);
 
             } catch (error) {
                 console.error('Start ad error:', error);
@@ -541,10 +571,10 @@
 
         function showAdForTreasure() {
             try {
-                console.log('Showing direct ad for treasure box...');
+                console.log('Showing ad for treasure box...');
                 
-                // Load direct ad
-                loadDirectAd();
+                // Load the provided ad code
+                loadCustomAd();
 
                 // Start countdown
                 startCountdown();
@@ -556,27 +586,40 @@
             }
         }
 
-        function loadDirectAd() {
+        function loadCustomAd() {
             try {
-                console.log('Loading direct ad...');
+                console.log('Loading custom ad...');
                 
                 // Clear existing content
                 elements.externalAdContainer.innerHTML = '';
                 
-                // Create iframe for direct ad
-                const iframe = document.createElement('iframe');
-                iframe.id = 'directAdFrame';
-                iframe.className = 'direct-ad-frame';
-                iframe.src = 'https://esteemedfinance.com/dEm_F.zCdfGKNfvIZAGEUc/qeWmU9BubZwUulCkdPCTlY/2BN/z/Uz4VM/jLEPtRNYjVYA3DNpT/gny_MVgN';
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.border = 'none';
-                iframe.style.borderRadius = '12px';
+                // Create a container for the special offer ad
+                const adContainer = document.createElement('div');
+                adContainer.className = 'special-offer-container';
+                
+                // Create ad content
+                adContainer.innerHTML = `
+                    <div class="special-offer-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h2 class="special-offer-title">Special Offer</h2>
+                    <p class="special-offer-text">
+                        Thank you for watching this advertisement.<br>
+                        This helps support our app and allows us to provide you with free rewards.
+                    </p>
+                    <div style="background: #f3f4f6; padding: 15px; border-radius: 10px; margin: 15px 0; width: 100%; max-width: 400px;">
+                        <h3 style="margin-bottom: 10px; color: #1f2937; font-weight: 600;">Limited Time Offer</h3>
+                        <p style="font-size: 14px; color: #6b7280;">Get exclusive rewards by completing more offers!</p>
+                    </div>
+                    <p class="support-text">
+                        Advertisement - Please watch for 20 seconds
+                    </p>
+                `;
                 
                 // Add to container
-                elements.externalAdContainer.appendChild(iframe);
+                elements.externalAdContainer.appendChild(adContainer);
 
-                // Also load the script ad
+                // Load the provided ad script
                 const script = document.createElement('script');
                 script.text = `
                     (function(yfmuxo){
@@ -593,29 +636,36 @@
                 document.head.appendChild(script);
 
             } catch (error) {
-                console.error('Error loading direct ad:', error);
+                console.error('Error loading custom ad:', error);
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
-            // Fallback - create a simple ad display
+            // Fallback ad content in case custom ad fails
             elements.externalAdContainer.innerHTML = `
-                <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;padding:20px;border-radius:12px;">
-                    <div style="font-size:48px;margin-bottom:20px;">📱</div>
-                    <h2 style="font-size:24px;font-weight:bold;margin-bottom:15px;">Special Mobile Offer</h2>
-                    <p style="font-size:16px;margin-bottom:20px;line-height:1.5;">Discover amazing deals on premium apps and services!</p>
-                    <div style="background:rgba(255,255,255,0.2);padding:15px;border-radius:10px;margin:15px 0;width:100%;max-width:300px;">
-                        <h3 style="margin-bottom:10px;font-weight:600;">Limited Time</h3>
-                        <p style="font-size:14px;">Exclusive rewards available now</p>
+                <div class="special-offer-container">
+                    <div class="special-offer-icon">
+                        <i class="fas fa-ad"></i>
                     </div>
-                    <p style="font-size:12px;margin-top:20px;opacity:0.8;">Advertisement</p>
+                    <h2 class="special-offer-title">Special Offer</h2>
+                    <p class="special-offer-text">
+                        Thank you for watching this advertisement.<br>
+                        This helps support our app and allows us to provide you with free rewards.
+                    </p>
+                    <div style="background: #f3f4f6; padding: 15px; border-radius: 10px; margin: 15px 0; width: 100%; max-width: 400px;">
+                        <h3 style="margin-bottom: 10px; color: #1f2937; font-weight: 600;">Limited Time Offer</h3>
+                        <p style="font-size: 14px; color: #6b7280;">Get exclusive rewards by completing more offers!</p>
+                    </div>
+                    <p class="support-text">
+                        Advertisement - Please watch for 20 seconds
+                    </p>
                 </div>
             `;
         }
 
         function startCountdown() {
-            let seconds = 20;
+            let seconds = 20; // Changed to 20 seconds
             elements.countdown.textContent = seconds;
 
             // Clear any existing interval
