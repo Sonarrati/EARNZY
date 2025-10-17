@@ -140,73 +140,6 @@
             color: #64748b;
             font-size: 0.85rem;
         }
-        .new-ad-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .new-ad-logo {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #fbbf24;
-        }
-        .new-ad-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .new-ad-description {
-            font-size: 16px;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            max-width: 500px;
-        }
-        .new-ad-features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            max-width: 600px;
-        }
-        .new-ad-feature {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .new-ad-cta {
-            background: #fbbf24;
-            color: #1e3a8a;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        .new-ad-cta:hover {
-            background: #f59e0b;
-            transform: scale(1.05);
-        }
-        .new-ad-footer {
-            margin-top: 20px;
-            font-size: 12px;
-            opacity: 0.8;
-        }
         .banner-ad-container {
             width: 100%;
             display: flex;
@@ -530,8 +463,8 @@
             try {
                 console.log('Showing ad for scratch card...');
                 
-                // Load popunder ad directly in the container
-                loadPopunderAd();
+                // Load new ad directly in the container
+                loadNewAd();
 
                 // Start countdown
                 startCountdown();
@@ -543,24 +476,23 @@
             }
         }
 
-        function loadPopunderAd() {
+        function loadNewAd() {
             try {
-                console.log('Loading popunder ad directly in container...');
+                console.log('Loading new ad in container...');
                 
                 // Clear existing content
                 elements.externalAdContainer.innerHTML = '';
                 
-                // Create iframe to display the popunder ad content
+                // Create iframe to display the new ad content
                 const iframe = document.createElement('iframe');
-                iframe.id = 'popunderAdFrame';
-                iframe.className = 'popunder-ad-frame';
+                iframe.id = 'newAdFrame';
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = 'none';
                 iframe.style.borderRadius = '12px';
                 iframe.style.background = 'white';
                 
-                // Create a simple ad content since we can't directly load the popunder script in iframe
+                // Create ad content with the new ad code
                 const adContent = `
                     <!DOCTYPE html>
                     <html>
@@ -638,37 +570,38 @@
                     <body>
                         <div class="ad-content">
                             <div class="ad-logo">
-                                <i class="fas fa-ad"></i>
+                                <i class="fas fa-gem"></i>
                             </div>
-                            <div class="ad-title">Special Offer</div>
+                            <div class="ad-title">Premium Offer</div>
                             <div class="ad-description">
-                                Thank you for watching this advertisement. This helps support our app and allows us to provide you with free rewards.
+                                Discover amazing deals and exclusive offers just for you! This advertisement helps support our platform.
                             </div>
-                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 15px 0;">
-                                <h3 style="margin-bottom: 10px;">Limited Time Offer</h3>
-                                <p style="font-size: 14px;">Get 50% off on our premium subscription when you sign up today!</p>
+                            
+                            <!-- New Ad Code -->
+                            <div>
+                                <script type="text/javascript">
+                                    atOptions = {
+                                        'key' : 'm.FxzGdtGhNfv_ZGGVUV/IeRm/9TujZ/UplJkhP_T/YF2hNczOUK4NMKjbEDtFNljgYl3TNjTFgOynMmi/Zos/aIWo1LpxdhDR0Px_',
+                                        'format' : 'iframe',
+                                        'height' : 250,
+                                        'width' : 300,
+                                        'params' : {}
+                                    };
+                                <\/script>
+                                <script type="text/javascript" src="//www.highperformanceformat.com/m.FxzGdtGhNfv_ZGGVUV/IeRm/9TujZ/UplJkhP_T/YF2hNczOUK4NMKjbEDtFNljgYl3TNjTFgOynMmi/Zos/aIWo1LpxdhDR0Px_/invoke.js"><\/script>
                             </div>
+                            
                             <button class="ad-cta" onclick="window.parent.postMessage('adCompleted', '*')">
                                 Continue to Reward
                             </button>
+                            
                             <div class="ad-footer">
                                 Advertisement - Please watch for 15 seconds
                             </div>
                         </div>
                         
                         <script>
-                            // Also load the actual popunder script
-                            const script = document.createElement('script');
-                            script.type = 'text/javascript';
-                            script.src = '//pl27796166.effectivegatecpm.com/b4/9c/05/b49c05a49564f46cbe63e7920a1c45be.js';
-                            document.head.appendChild(script);
-                            
-                            // Listen for the button click to complete the ad
-                            document.querySelector('.ad-cta').addEventListener('click', function() {
-                                window.parent.postMessage('adCompleted', '*');
-                            });
-                            
-                            // Auto-complete after 15 seconds if user doesn't click
+                            // Auto-complete after 15 seconds
                             setTimeout(function() {
                                 window.parent.postMessage('adCompleted', '*');
                             }, 15000);
@@ -682,7 +615,7 @@
                 // Listen for messages from the iframe
                 window.addEventListener('message', function(event) {
                     if (event.data === 'adCompleted') {
-                        // If ad is completed via button click, process check-in
+                        // If ad is completed, process check-in
                         processScratchCardAfterAd();
                     }
                 });
@@ -691,19 +624,38 @@
                 elements.externalAdContainer.appendChild(iframe);
 
             } catch (error) {
-                console.error('Error loading popunder ad:', error);
+                console.error('Error loading new ad:', error);
                 showFallbackAd();
             }
         }
 
         function showFallbackAd() {
-            // Fallback ad content in case popunder fails
+            // Fallback ad content in case new ad fails
             elements.externalAdContainer.innerHTML = `
                 <div class="text-center text-white p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
                     <i class="fas fa-ad text-3xl text-white mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Scratch Card Reward</h3>
                     <p class="text-gray-200 mb-4">Thank you for watching this advertisement</p>
-                    <div class="text-sm text-gray-300">
+                    
+                    <!-- New Ad Code -->
+                    <div>
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : 'm.FxzGdtGhNfv_ZGGVUV/IeRm/9TujZ/UplJkhP_T/YF2hNczOUK4NMKjbEDtFNljgYl3TNjTFgOynMmi/Zos/aIWo1LpxdhDR0Px_',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                        <\/script>
+                        <script type="text/javascript" src="//www.highperformanceformat.com/m.FxzGdtGhNfv_ZGGVUV/IeRm/9TujZ/UplJkhP_T/YF2hNczOUK4NMKjbEDtFNljgYl3TNjTFgOynMmi/Zos/aIWo1LpxdhDR0Px_/invoke.js"><\/script>
+                    </div>
+                    
+                    <button onclick="window.processScratchCardAfterAd()" class="mt-4 bg-yellow-500 text-gray-800 px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition-colors">
+                        Claim Reward
+                    </button>
+                    
+                    <div class="text-sm text-gray-300 mt-4">
                         <i class="fas fa-info-circle mr-1"></i>
                         Advertisement - Watch full ad to claim reward
                     </div>
@@ -834,6 +786,9 @@
                 notification.classList.add('hidden');
             }, 3000);
         }
+
+        // Make function available globally for fallback button
+        window.processScratchCardAfterAd = processScratchCardAfterAd;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', loadScratchPage);
