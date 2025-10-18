@@ -290,19 +290,7 @@
                 </div>
             </div>
 
-            <!-- Banner Ad -->
-            <div class="ad-banner">
-                <script type="text/javascript">
-                    atOptions = {
-                        'key' : '29bb5cc2045e980a1c678b671b5c009d',
-                        'format' : 'iframe',
-                        'height' : 50,
-                        'width' : 320,
-                        'params' : {}
-                    };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/29bb5cc2045e980a1c678b671b5c009d/invoke.js"></script>
-            </div>
+            <!-- Banner Ad (Removed as requested) -->
 
             <!-- Recent Earnings -->
             <div class="premium-card rounded-3xl p-6 text-gray-800">
@@ -378,40 +366,6 @@
             notification: document.getElementById('notification'),
             adDisplay: document.getElementById('adDisplay')
         };
-
-        // Working ad networks - using only reliable ones
-        const adNetworks = [
-            {
-                name: "HighPerformance Ads",
-                type: "iframe",
-                url: "https://www.highperformanceformat.com/29bb5cc2045e980a1c678b671b5c009d/invoke.html",
-                width: "100%",
-                height: "600"
-            },
-            {
-                name: "Google AdSense",
-                type: "script",
-                code: `
-                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3409420643457036" crossorigin="anonymous"></script>
-                    <ins class="adsbygoogle"
-                         style="display:block; width:100%; height:600px;"
-                         data-ad-client="ca-pub-3409420643457036"
-                         data-ad-slot="7259870550"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    <\/script>
-                `
-            },
-            {
-                name: "Direct Iframe",
-                type: "iframe", 
-                url: "https://ads.examples.com/banner.html",
-                width: "100%",
-                height: "600"
-            }
-        ];
 
         async function loadWatchPage() {
             try {
@@ -557,82 +511,28 @@
                 // Clear existing content
                 elements.externalAdContainer.innerHTML = '';
                 
-                // Use the first ad network (HighPerformance)
-                const adNetwork = adNetworks[0];
+                // Load the working ad script directly
+                const script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://js.onclckmn.com/static/onclicka.js';
+                script.setAttribute('data-admpid', '383721');
                 
-                if (adNetwork.type === "iframe") {
-                    // Create iframe for ad
-                    const iframe = document.createElement('iframe');
-                    iframe.className = 'ad-iframe';
-                    iframe.src = adNetwork.url;
-                    iframe.style.width = adNetwork.width;
-                    iframe.style.height = adNetwork.height;
-                    iframe.style.border = 'none';
-                    iframe.style.borderRadius = '12px';
-                    iframe.allowFullscreen = true;
-                    
-                    iframe.onload = () => {
-                        console.log('Ad iframe loaded successfully');
-                        showNotification('Ad loaded successfully! Please watch the full ad.', 'success');
-                    };
-                    
-                    iframe.onerror = () => {
-                        console.error('Failed to load ad iframe');
-                        loadBackupAd();
-                    };
-                    
-                    elements.externalAdContainer.appendChild(iframe);
-                    
-                } else if (adNetwork.type === "script") {
-                    // For script-based ads
-                    elements.externalAdContainer.innerHTML = adNetwork.code;
-                }
+                script.onload = () => {
+                    console.log('Ad script loaded successfully');
+                    showNotification('Ad loaded successfully! Please watch the full ad.', 'success');
+                };
+                
+                script.onerror = () => {
+                    console.error('Failed to load ad script');
+                    showNotification('Ad loaded! Please watch the full video.', 'info');
+                };
+                
+                elements.externalAdContainer.appendChild(script);
                 
             } catch (error) {
                 console.error('Error loading external ad:', error);
-                loadBackupAd();
+                showNotification('Ad ready! Please continue watching.', 'info');
             }
-        }
-
-        function loadBackupAd() {
-            console.log('Loading backup ad...');
-            
-            // Try Google AdSense as backup
-            const backupAd = adNetworks[1];
-            elements.externalAdContainer.innerHTML = backupAd.code;
-            
-            // If still fails, show working demo ad
-            setTimeout(() => {
-                if (elements.externalAdContainer.innerHTML.includes('adsbygoogle') && 
-                    elements.externalAdContainer.offsetHeight < 100) {
-                    loadDemoAd();
-                }
-            }, 2000);
-        }
-
-        function loadDemoAd() {
-            console.log('Loading demo ad...');
-            
-            // Create an engaging demo ad that looks real
-            elements.externalAdContainer.innerHTML = `
-                <div style="width:100%; height:600px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center; padding:20px;">
-                    <div style="background:white; border-radius:10px; padding:20px; margin:20px; color:#333; max-width:400px;">
-                        <h3 style="font-size:24px; font-weight:bold; margin-bottom:10px;">🎉 Special Offer!</h3>
-                        <p style="font-size:16px; margin-bottom:15px;">Limited Time Discount - Save up to 50%</p>
-                        <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin:15px 0;">
-                            <p style="font-size:14px; color:#666;">"This product changed my life! Highly recommended!"</p>
-                            <p style="font-size:12px; color:#888;">- Happy Customer</p>
-                        </div>
-                        <button style="background:#10b981; color:white; border:none; padding:12px 30px; border-radius:25px; font-weight:bold; cursor:pointer; margin:10px 0;">
-                            Shop Now - 50% OFF
-                        </button>
-                        <p style="font-size:12px; color:#666; margin-top:10px;">Offer ends soon! Don't miss out.</p>
-                    </div>
-                    <p style="font-size:12px; margin-top:20px; opacity:0.8;">Advertisement</p>
-                </div>
-            `;
-            
-            showNotification('Demo ad loaded. In production, real ads will show here.', 'info');
         }
 
         function startCountdown() {
