@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- New Ad Script -->
-    <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="383721"></script>
+    <script type='text/javascript' src='//pl27874016.effectivegatecpm.com/ee/e4/7f/eee47f18b3ce0d93fb8cf7795ead89c5.js'></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
@@ -144,7 +144,7 @@
         }
         .ad-header-text {
             color: #334155;
-            font-weight: 600;
+            fontWeight: 600;
             font-size: 0.9rem;
         }
         .ad-instructions {
@@ -346,20 +346,6 @@
                 </div>
             </div>
 
-            <!-- Banner Ad -->
-            <div class="ad-banner">
-                <script type="text/javascript">
-                    atOptions = {
-                        'key' : '29bb5cc2045e980a1c678b671b5c009d',
-                        'format' : 'iframe',
-                        'height' : 50,
-                        'width' : 320,
-                        'params' : {}
-                    };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/29bb5cc2045e980a1c678b671b5c009d/invoke.js"></script>
-            </div>
-
             <!-- Recent Earnings -->
             <div class="premium-card rounded-3xl p-6 text-gray-800">
                 <h3 class="text-lg font-bold mb-4 flex items-center">
@@ -435,22 +421,6 @@
             notification: document.getElementById('notification'),
             adDisplay: document.getElementById('adDisplay')
         };
-
-        // Multiple ad networks for better coverage
-        const adNetworks = [
-            {
-                name: "Network 1",
-                code: `(function(s){s.dataset.zone='10057106',s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`
-            },
-            {
-                name: "Network 2", 
-                code: `<script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="383721"><\/script>`
-            },
-            {
-                name: "Network 3",
-                code: `<iframe src="https://www.highperformanceformat.com/29bb5cc2045e980a1c678b671b5c009d/invoke.html" width="100%" height="600" frameborder="0" scrolling="no"></iframe>`
-            }
-        ];
 
         async function loadWatchPage() {
             try {
@@ -579,8 +549,8 @@
                 // Show active ad state
                 elements.activeAdState.classList.remove('hidden');
                 
-                // Load external ad
-                loadExternalAd();
+                // Load the new ad code
+                loadNewAd();
 
                 // Start countdown with 30 seconds
                 startCountdown();
@@ -600,16 +570,12 @@
             }
         }
 
-        function loadExternalAd() {
+        function loadNewAd() {
             try {
-                console.log('Loading ads from multiple networks...');
+                console.log('Loading new ad code...');
                 
                 // Clear existing content
                 elements.externalAdContainer.innerHTML = '';
-                
-                // Try multiple ad networks
-                const randomAd = adNetworks[Math.floor(Math.random() * adNetworks.length)];
-                console.log('Trying ad network:', randomAd.name);
                 
                 // Create container for ad
                 const adContainer = document.createElement('div');
@@ -618,38 +584,24 @@
                 adContainer.style.height = '100%';
                 adContainer.style.minHeight = '600px';
                 
-                if (randomAd.name === "Network 3") {
-                    // If it's an iframe ad
-                    adContainer.innerHTML = randomAd.code;
-                } else {
-                    // For script-based ads
-                    const script = document.createElement('script');
-                    if (randomAd.name === "Network 1") {
-                        // Execute the script code directly
-                        try {
-                            eval(randomAd.code);
-                            adLoaded = true;
-                        } catch (e) {
-                            console.error('Error executing ad script:', e);
-                        }
-                    } else {
-                        // For other script ads
-                        script.innerHTML = randomAd.code;
-                        script.onload = () => {
-                            console.log('Ad script loaded successfully');
-                            adLoaded = true;
-                        };
-                        script.onerror = () => {
-                            console.error('Failed to load ad script');
-                        };
-                        adContainer.appendChild(script);
-                    }
-                }
+                // Create script element with the new ad code
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = '//pl27874016.effectivegatecpm.com/ee/e4/7f/eee47f18b3ce0d93fb8cf7795ead89c5.js';
+                script.onload = () => {
+                    console.log('New ad script loaded successfully');
+                    adLoaded = true;
+                };
+                script.onerror = () => {
+                    console.error('Failed to load new ad script');
+                    loadFallbackAd();
+                };
                 
+                adContainer.appendChild(script);
                 elements.externalAdContainer.appendChild(adContainer);
                 
             } catch (error) {
-                console.error('Error loading ad code:', error);
+                console.error('Error loading new ad code:', error);
                 loadFallbackAd();
             }
         }
@@ -700,10 +652,6 @@
                 clearInterval(countdownInterval);
                 processAdCompletion();
             }
-        }
-
-        function showFallbackAd() {
-            loadFallbackAd();
         }
 
         function startCountdown() {
