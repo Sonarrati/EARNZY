@@ -25,12 +25,12 @@
             border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.5);
             position: relative;
-            overflow: visible;
+            overflow: hidden;
             margin-bottom: 20px;
             width: 100%;
             height: auto;
             min-height: 300px;
-            transition: min-height 0.3s ease;
+            transition: min-height 0.5s ease;
         }
         #adDisplay.expanded {
             min-height: 600px;
@@ -70,7 +70,7 @@
             border-radius: 12px;
             z-index: 10;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
         }
         .hidden {
             display: none !important;
@@ -86,7 +86,7 @@
             border-radius: 12px;
             z-index: 15;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
         }
         .ad-loading {
             background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
@@ -110,7 +110,7 @@
             min-height: 300px;
             position: relative;
             z-index: 10;
-            overflow: visible;
+            overflow: hidden;
         }
         .timer-container {
             position: absolute;
@@ -167,7 +167,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: visible;
+            overflow: hidden;
         }
         .success-message {
             text-align: center;
@@ -200,7 +200,7 @@
             min-height: 300px;
             border: none;
             border-radius: 12px;
-            overflow: visible;
+            overflow: hidden;
         }
         .ad-wrapper {
             width: 100%;
@@ -209,7 +209,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: visible;
+            overflow: hidden;
         }
         .expanded .ad-frame-container,
         .expanded .full-ad-container,
@@ -255,7 +255,7 @@
                 <p class="text-gray-600 mb-6">Watch short ads and earn coins instantly</p>
 
                 <!-- Ad Display Area -->
-                <div id="adDisplay" class="rounded-2xl overflow-visible">
+                <div id="adDisplay" class="rounded-2xl overflow-hidden">
                     <!-- Initial State - Visible by default -->
                     <div id="initialAdState" class="text-center w-full h-full flex items-center justify-center">
                         <div class="ad-placeholder">
@@ -420,7 +420,7 @@
         };
 
         // New ad URL
-        const AD_URL = "https://www.effectivegatecpm.com/jrcgp8tspv?key=cfdc048f1be37ad89069182de20d8c63";
+        const AD_URL = "https://esteemedfinance.com/d/maFpzwd.GsNgvCZ/GpUx/oelm/9/uLZ/ULlEkNP_TRYH2oN/z-UB4ZMSjVEWtGNFjsYe3/NmT/g/ytMuikZVsFaMW/1tpPdoDR0/xg";
 
         async function loadWatchPage() {
             try {
@@ -515,7 +515,7 @@
                     throw new Error('Daily limit reached');
                 }
 
-                // Expand the ad display
+                // Expand the ad display to full height
                 elements.adDisplay.classList.add('expanded');
 
                 // Hide initial state and show loading
@@ -575,7 +575,7 @@
                 iframe.style.borderRadius = '12px';
                 iframe.style.position = 'relative';
                 iframe.style.zIndex = '15';
-                iframe.style.overflow = 'visible';
+                iframe.style.overflow = 'auto';
                 iframe.scrolling = 'yes';
                 
                 iframe.onload = () => {
@@ -583,7 +583,6 @@
                     // Try to adjust iframe to show full content
                     try {
                         // This attempts to make the iframe responsive to its content
-                        // Note: This may not work due to cross-origin restrictions
                         iframe.style.height = 'auto';
                         iframe.style.minHeight = '600px';
                     } catch(e) {
@@ -609,7 +608,7 @@
         function showFallbackAd() {
             // Fallback ad content in case external ad fails
             elements.externalAdContainer.innerHTML = `
-                <div class="text-center text-gray-700 p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); z-index: 15; position: relative; overflow: visible; border: 2px dashed #94a3b8; border-radius: 12px; min-height: 600px;">
+                <div class="text-center text-gray-700 p-4 w-full h-full flex items-center justify-center flex-col" style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); z-index: 15; position: relative; overflow: hidden; border: 2px dashed #94a3b8; border-radius: 12px; min-height: 600px;">
                     <i class="fas fa-ad text-3xl text-green-500 mb-3"></i>
                     <h3 class="text-lg font-semibold mb-2">Special Offer</h3>
                     <p class="text-gray-600 mb-4">Thank you for watching this advertisement</p>
