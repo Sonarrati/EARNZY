@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- New Ad Script -->
-    <script type='text/javascript' src='//pl27874016.effectivegatecpm.com/ee/e4/7f/eee47f18b3ce0d93fb8cf7795ead89c5.js'></script>
+    <script async="async" data-cfasync="false" src="//pl27874150.effectivegatecpm.com/7de55dc0fcc69efbcb975aedba2067cd/invoke.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
@@ -144,7 +144,7 @@
         }
         .ad-header-text {
             color: #334155;
-            fontWeight: 600;
+            font-weight: 600;
             font-size: 0.9rem;
         }
         .ad-instructions {
@@ -236,6 +236,15 @@
             align-items: center;
             justify-content: center;
         }
+        #adContainer {
+            width: 100%;
+            height: 100%;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen pb-20">
@@ -294,10 +303,12 @@
                         <div class="ad-wrapper">
                             <div class="full-ad-container">
                                 <div id="externalAdContainer" class="ad-frame-container">
-                                    <div class="ad-loading">
-                                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
-                                        <p class="text-lg font-semibold">Loading Ad</p>
-                                        <p class="text-gray-600 text-sm mt-1">Please wait...</p>
+                                    <div id="adContainer">
+                                        <div class="ad-loading">
+                                            <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+                                            <p class="text-lg font-semibold">Loading Ad</p>
+                                            <p class="text-gray-600 text-sm mt-1">Please wait...</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +430,8 @@
             earnedCoins: document.getElementById('earnedCoins'),
             recentEarnings: document.getElementById('recentEarnings'),
             notification: document.getElementById('notification'),
-            adDisplay: document.getElementById('adDisplay')
+            adDisplay: document.getElementById('adDisplay'),
+            adContainer: document.getElementById('adContainer')
         };
 
         async function loadWatchPage() {
@@ -549,7 +561,7 @@
                 // Show active ad state
                 elements.activeAdState.classList.remove('hidden');
                 
-                // Load the new ad code
+                // Load the new ad
                 loadNewAd();
 
                 // Start countdown with 30 seconds
@@ -572,36 +584,25 @@
 
         function loadNewAd() {
             try {
-                console.log('Loading new ad code...');
+                console.log('Loading new ad...');
                 
                 // Clear existing content
-                elements.externalAdContainer.innerHTML = '';
+                elements.adContainer.innerHTML = '';
                 
-                // Create container for ad
-                const adContainer = document.createElement('div');
-                adContainer.className = 'ad-script-container';
-                adContainer.style.width = '100%';
-                adContainer.style.height = '100%';
-                adContainer.style.minHeight = '600px';
+                // Create the ad container div
+                const adDiv = document.createElement('div');
+                adDiv.id = 'container-7de55dc0fcc69efbcb975aedba2067cd';
+                adDiv.style.width = '100%';
+                adDiv.style.height = '100%';
+                adDiv.style.minHeight = '600px';
                 
-                // Create script element with the new ad code
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = '//pl27874016.effectivegatecpm.com/ee/e4/7f/eee47f18b3ce0d93fb8cf7795ead89c5.js';
-                script.onload = () => {
-                    console.log('New ad script loaded successfully');
-                    adLoaded = true;
-                };
-                script.onerror = () => {
-                    console.error('Failed to load new ad script');
-                    loadFallbackAd();
-                };
+                elements.adContainer.appendChild(adDiv);
                 
-                adContainer.appendChild(script);
-                elements.externalAdContainer.appendChild(adContainer);
+                // The ad script is already loaded in the head, so the ad should appear
+                adLoaded = true;
                 
             } catch (error) {
-                console.error('Error loading new ad code:', error);
+                console.error('Error loading new ad:', error);
                 loadFallbackAd();
             }
         }
@@ -610,7 +611,7 @@
             console.log('Loading fallback ad...');
             
             // Clear existing content
-            elements.externalAdContainer.innerHTML = '';
+            elements.adContainer.innerHTML = '';
             
             // Create interactive fallback ad
             const fallbackAd = document.createElement('div');
@@ -642,7 +643,7 @@
                 </div>
             `;
             
-            elements.externalAdContainer.appendChild(fallbackAd);
+            elements.adContainer.appendChild(fallbackAd);
             adLoaded = true;
         }
 
@@ -752,7 +753,7 @@
             elements.adDisplay.classList.remove('expanded');
             
             // Clear ad content
-            elements.externalAdContainer.innerHTML = `
+            elements.adContainer.innerHTML = `
                 <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
                 <p class="text-lg font-semibold">Loading Ad</p>
                 <p class="text-gray-600 text-sm mt-1">Please wait...</p>
